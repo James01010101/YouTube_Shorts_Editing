@@ -4,6 +4,7 @@
 *.png
 *.jpg
 *.jpeg
+*.webp
 
 # video
 *.mp4
@@ -17,4 +18,8 @@
 # specific folders
 Music/*
 Generic\ Assets/*
+
+
+# random stuff
 */__pycache__/*
+*.DS_Store
