@@ -41,8 +41,16 @@ def write_json_settings(settings, file):
         
         # specific cases
         if key in ["question_1_timer_position", "question_2_timer_position", "question_3_timer_position"]:
-            ["center", 1250],
             file.write(f"[\"center\", 1250],\n")
+            
+        elif key == "subscribe_box_position":
+            file.write(f"[\"center\", 1060],\n")
+            
+        # to deal with the last comma
+        elif key == "garbage":
+            file.write(f"\"garbage\"\n")
+            
+            
             
             
         
@@ -69,8 +77,6 @@ def write_json_settings(settings, file):
             file.write("\n\n\n")
         
     
-    # write some garbage comment so i dont have to deal with the last comma
-    file.write("\n\n\t\"garbage\": \"garbage\"\n")
     file.write("}\n") # end with closed bracket
     
 
