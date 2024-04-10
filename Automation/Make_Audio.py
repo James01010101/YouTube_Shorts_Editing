@@ -1,5 +1,6 @@
 import os
 from moviepy.editor import AudioFileClip, CompositeAudioClip, concatenate_audioclips
+
 # this will go through all folders and make and play the audio files
 
 from Make_Video_Globals import Globals
@@ -12,10 +13,10 @@ quiz_path = f"{main_path}{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}
 
 
 do_in = 1
-do_q1 = 1
-do_q2 = 1
-do_q3 = 1
-do_ou = 1
+do_q1 = 0
+do_q2 = 0
+do_q3 = 0
+do_ou = 0
 
 sections_durations = [0, 0, 0, 0, 0]
 total_duration = 0
@@ -40,6 +41,7 @@ if do_in:
         clips.append(AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{intro_audio_files[i]}.wav"))
     
     combined_audio = concatenate_audioclips(clips)
+    
     
     combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
         

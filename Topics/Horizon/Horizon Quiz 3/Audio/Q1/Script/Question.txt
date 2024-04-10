@@ -1,0 +1,3 @@
+[[rate 200]] [[slnc 10]]
+What is the name of this Horizon character?
+[[rate 0]]

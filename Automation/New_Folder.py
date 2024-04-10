@@ -16,8 +16,8 @@ def write_json_settings(settings, file):
                     'timer_path', 'background_size', 'question_1_timer_position', 'answer_1_position', 
                     'question_2_timer_position', 'answer_2_position', 'question_3_timer_position', 
                     'answer_3_position', 'quick_pop_in_overshoot', 'how_well_position', 
-                    'topic_intro_position', 'three_questions_position', 'three_questions_anim_out_time', 
-                    'seconds_position', 'question_raw_text', 'question_text_interline', 
+                    'topic_intro_position', 'three_questions_anim_out_time', 
+                    'question_raw_text', 'question_text_interline', 
                     'thanks_pop_in_overshoot', 'topic_outro_colour', 'subscribe_kerning', 'subscribe_box_colour',
                     'question_1_image_use_helper', 'question_2_image_use_helper', 'question_3_image_use_helper']
     

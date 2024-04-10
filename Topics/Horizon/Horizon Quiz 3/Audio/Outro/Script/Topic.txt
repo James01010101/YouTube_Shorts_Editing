@@ -1,0 +1,3 @@
+[[rate 200]]
+Horizon Games quiz.
+[[rate 0]]

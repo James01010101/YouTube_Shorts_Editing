@@ -425,8 +425,7 @@ def make_intro(settings, using_mp=False):
     
     intro_end_time = time.time()
     
-    
-    
+
     # short video for testing
     if settings['render_in']:
         #intro_video_audio_combined = intro_video_audio_combined.subclip( 
@@ -455,7 +454,8 @@ def make_intro(settings, using_mp=False):
         print(f"Intro Render took: {total_minutes}:{total_seconds} seconds")
     
     
-    return intro_video_audio_combined
+    #return intro_video_audio_combined
+    return intro_video_combined
 
 
 

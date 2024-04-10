@@ -8,10 +8,8 @@ from moviepy.audio.AudioClip import AudioClip
 
 import Make_Video_Sections as Make_Video_Sections
 import Make_Video_Animations
-
-import multiprocessing as mp
-
 from Make_Video_Globals import Globals
+import Interactive_Editor
 
     
 
@@ -28,6 +26,11 @@ if __name__ == '__main__':
     settings = Globals.read_settings_file(Globals.topic, Globals.quiz_num)
     
     
+    use_pygame_editor = True
+        
+        
+    
+    
     full_edit_start_time = time.time()
     
     if settings['render_video'] and settings['testing']:
@@ -41,9 +44,9 @@ if __name__ == '__main__':
     processes = []
     
     if settings['edit_in']:
-        if not settings['render_video'] and settings['use_mp']:
-            processes.append(mp.Process(target=Make_Video_Sections.make_intro, args=(True,)))
-            processes[-1].start()
+        
+        if use_pygame_editor:
+            Interactive_Editor.run_pygame_editor(settings, 'intro')
             
         else:
             start_time = time.time()
@@ -53,56 +56,31 @@ if __name__ == '__main__':
             
     
     if settings['edit_q1']:
-        if not settings['render_video'] and settings['use_mp']:
-            processes.append(mp.Process(target=Make_Video_Sections.make_questions, args=(1, True,)))
-            processes[-1].start()
-            
-        else:
-            start_time = time.time()
-            q1_final_video = Make_Video_Sections.make_questions(settings, 1)
-            final_clips.append(q1_final_video)
-            print(f"Q1 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        start_time = time.time()
+        q1_final_video = Make_Video_Sections.make_questions(settings, 1)
+        final_clips.append(q1_final_video)
+        print(f"Q1 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
             
     
     if settings['edit_q2']:
-        if not settings['render_video'] and settings['use_mp']:
-            processes.append(mp.Process(target=Make_Video_Sections.make_questions, args=(2, True,)))
-            processes[-1].start()
-            
-        else:
-            start_time = time.time()
-            q2_final_video = Make_Video_Sections.make_questions(settings, 2)
-            final_clips.append(q2_final_video)
-            print(f"Q2 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        start_time = time.time()
+        q2_final_video = Make_Video_Sections.make_questions(settings, 2)
+        final_clips.append(q2_final_video)
+        print(f"Q2 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
 
     if settings['edit_q3']:
-        if not settings['render_video'] and settings['use_mp']:
-            processes.append(mp.Process(target=Make_Video_Sections.make_questions, args=(3, True,)))
-            processes[-1].start()
-            
-        else:
-            start_time = time.time()
-            q3_final_video = Make_Video_Sections.make_questions(settings, 3)
-            final_clips.append(q3_final_video)
-            print(f"Q3 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        start_time = time.time()
+        q3_final_video = Make_Video_Sections.make_questions(settings, 3)
+        final_clips.append(q3_final_video)
+        print(f"Q3 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
 
     
     if settings['edit_ou']:
-        if not settings['render_video'] and settings['use_mp']:
-            processes.append(mp.Process(target=Make_Video_Sections.make_outro, args=(True,)))
-            processes[-1].start()
-            
-        else:
-            start_time = time.time()
-            outro_final_video = Make_Video_Sections.make_outro(settings)
-            final_clips.append(outro_final_video)
-            print(f"Outro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        start_time = time.time()
+        outro_final_video = Make_Video_Sections.make_outro(settings)
+        final_clips.append(outro_final_video)
+        print(f"Outro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
     
-    
-    
-    # join all threads
-    for p in processes:
-        p.join()
     
     full_edit_end_time = time.time()
     print("Total Time:", round(full_edit_end_time - full_edit_start_time, 2), " seconds")

@@ -14,7 +14,7 @@ def show_frame(clip, seconds, num):
     """
     Show a frame at time t of a clip
     """
-        # Get a frame at the 10-second mark
+    # Get a frame at the 10-second mark
     frame = clip.get_frame(seconds)
 
     image = Image.fromarray(frame)
