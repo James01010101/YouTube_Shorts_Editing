@@ -21,3 +21,21 @@ audio:
 video:
 	clear
 	python "Automation/Make_Video_Main.py"
+
+
+
+# run my test file to test some random code
+test:
+	clear
+	python "Automation/Test.py"
+
+
+# this will remove all audio files
+cleanaudio:
+	clear
+	find Topics -type f -iname '*.wav' -exec rm -f {} +
+	find Topics -type f -iname '*.mp3' -exec rm -f {} +
+	find Topics -type f -iname '*.aiff' -exec rm -f {} +
+
+
+
