@@ -1,0 +1,3 @@
+[[rate 200]]
+Thanks for playing my
+[[rate 0]]

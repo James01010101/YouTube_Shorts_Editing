@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 2. [[slnc 300]] this question will be medium difficulty. 
+[[slnc 500]]
+
+What special material is Captain America's shield made from?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Diamond. 
+[[slnc 400]]
+
+B, Vibranium. 
+[[slnc 400]]
+
+Or C, Tungston.
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer, is B, Vibranium.
+
+[[rate 0]] 

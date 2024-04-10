@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 3. [[slnc 300]] hard difficulty. 
+[[slnc 500]]
+
+What is the longest episode [[slnc 100]] of The Walking Dead?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Season 11 Episode 24, - Rest In Peace?
+[[slnc 400]]
+
+B, Season 1 Episode 1, - Days Gone Bye?
+[[slnc 400]]
+
+Or C, Season 5 Episode 16, - Conquer?
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer is B, Days Gone Bye. It has a total runtime of 1 hour and 4 minutes. 
+
+[[rate 0]]

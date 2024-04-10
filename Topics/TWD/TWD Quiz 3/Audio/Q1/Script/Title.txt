@@ -1,0 +1,4 @@
+[[rate 200]]
+Question number 1 [[slnc 300]] 
+Lets start off with an easy question.
+[[rate 0]]

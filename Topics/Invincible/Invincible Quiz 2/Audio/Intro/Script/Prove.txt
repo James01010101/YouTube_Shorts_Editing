@@ -1,0 +1,2 @@
+[[rate 200]]
+Prove your knowledge[[rate 0]]

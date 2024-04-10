@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the main location, that The Last of Us part 2, takes place in?
+[[rate 0]]

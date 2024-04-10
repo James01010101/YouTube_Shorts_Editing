@@ -1,0 +1,3 @@
+[[rate 200]]
+Star Wars quiz.
+[[rate 0]]

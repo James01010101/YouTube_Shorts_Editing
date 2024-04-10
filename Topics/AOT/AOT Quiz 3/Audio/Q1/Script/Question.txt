@@ -1,0 +1,3 @@
+[[rate 200]]
+Who was the last owner, of the Armoured Titan
+[[rate 0]]

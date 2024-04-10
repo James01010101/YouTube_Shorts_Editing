@@ -1,0 +1,4 @@
+[[rate 200]]
+Question number 2 [[slnc 300]] 
+Now for a medium difficulty question.
+[[rate 0]]

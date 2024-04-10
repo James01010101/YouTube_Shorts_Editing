@@ -1,0 +1,3 @@
+[[rate 200]]
+How much health - does one apple heal you?
+[[rate 0]]

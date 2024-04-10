@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 1. [[slnc 300]] Lets start with an easy question. 
+[[slnc 500]]
+
+What is Iron Man’s real name?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Tony Stank. 
+[[slnc 400]]
+
+B, Anthony Stark. 
+[[slnc 400]]
+
+Or C, Rhody Stark.
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer, is B, This is a bit of a trick question, Iron Man’s real name is Anthony, or more commonly Tony, Stark.
+
+[[rate 0]]

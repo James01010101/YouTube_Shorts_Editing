@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 2. [[slnc 300]] this question will be medium difficulty. 
+[[slnc 500]]
+
+What is the name of this Walking Dead character?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Daryl?
+[[slnc 400]]
+
+B, Merle?
+[[slnc 400]]
+
+Or C, Negan?
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer, is A, Daryl Dixon.
+
+[[rate 0]]

@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 1. [[slnc 300]] Lets start with an easy question. 
+[[slnc 500]]
+
+In The Walking Dead, what is the main characters full name?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Rick Smith?
+[[slnc 400]]
+
+B, Rick Grimes? 
+[[slnc 400]]
+
+Or C, Rick Dixon?
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer, is B, Rick Grimes.
+
+[[rate 0]]

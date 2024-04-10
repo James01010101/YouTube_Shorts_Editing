@@ -1,0 +1,2 @@
+[[rate 200]]
+Star Wars[[rate 0]]

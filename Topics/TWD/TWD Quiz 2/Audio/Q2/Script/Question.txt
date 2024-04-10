@@ -1,0 +1,3 @@
+[[rate 200]]
+How many episodes does Season 1 of The Walking Dead have?
+[[rate 0]]

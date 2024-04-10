@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the name of the alien race that takes over humans to use as their hive mind host?
+[[rate 0]]

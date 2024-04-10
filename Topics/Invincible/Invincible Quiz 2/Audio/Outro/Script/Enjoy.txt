@@ -1,0 +1,3 @@
+[[rate 200]]
+I hope you enjoyed it.
+[[rate 0]]

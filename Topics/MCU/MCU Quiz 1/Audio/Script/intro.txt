@@ -1,0 +1,8 @@
+[[rate 150]]
+Quick, [[slnc 100]] 
+
+[[rate 200]]
+How well do you know The Marvel Cinematic Universe, 
+Can you answer these 3 MCU questions in less than 3 seconds?
+
+[[rate 0]]

@@ -1,0 +1,3 @@
+[[rate 200]]
+Which Season of The Walking Dead did Michonne first appear in?
+[[rate 0]]

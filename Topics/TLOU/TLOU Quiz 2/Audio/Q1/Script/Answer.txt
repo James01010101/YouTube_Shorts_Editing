@@ -1,0 +1,3 @@
+[[rate 200]]
+The correct answer, is Tommy Miller
+[[rate 0]]

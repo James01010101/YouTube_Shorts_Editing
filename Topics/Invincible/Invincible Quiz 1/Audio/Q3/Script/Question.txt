@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the name of the actor, who voices Omni-man, in the Invincible TV show?
+[[rate 0]]

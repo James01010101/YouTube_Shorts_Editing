@@ -1,0 +1,3 @@
+[[rate 200]]
+Who was the creator, of the Thunder Spears
+[[rate 0]]

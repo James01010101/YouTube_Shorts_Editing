@@ -1,0 +1,3 @@
+[[rate 200]]
+The Walking Dead quiz.
+[[rate 0]]

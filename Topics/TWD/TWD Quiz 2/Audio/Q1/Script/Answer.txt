@@ -1,0 +1,3 @@
+[[rate 200]]
+The correct answer, is Maggie Rhee
+[[rate 0]]

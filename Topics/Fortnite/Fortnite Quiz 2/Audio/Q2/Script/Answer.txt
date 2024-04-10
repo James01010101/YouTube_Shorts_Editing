@@ -1,0 +1,3 @@
+[[rate 200]]
+The correct answer, is a Heavy Sniper Rifle
+[[rate 0]]

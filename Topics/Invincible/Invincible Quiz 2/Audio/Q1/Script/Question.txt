@@ -1,0 +1,3 @@
+[[rate 200]]
+What is Omni-Mans real name?
+[[rate 0]]

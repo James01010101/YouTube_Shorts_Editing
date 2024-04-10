@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the name of the Actor who plays Tommy in The Last of Us games?
+[[rate 0]]

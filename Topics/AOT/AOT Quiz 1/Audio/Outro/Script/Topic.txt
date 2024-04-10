@@ -1,0 +1,3 @@
+[[rate 200]]
+Attack on Titan quiz.
+[[rate 0]]

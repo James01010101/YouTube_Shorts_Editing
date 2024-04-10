@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the name of the metal used to make mandalorian armour that can withstand a lightsaber?
+[[rate 0]]

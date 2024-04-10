@@ -1,0 +1,3 @@
+[[rate 150]]
+Quick,
+[[rate 0]]

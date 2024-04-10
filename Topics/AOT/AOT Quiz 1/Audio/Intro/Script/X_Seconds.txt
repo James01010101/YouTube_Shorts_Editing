@@ -1,0 +1,3 @@
+[[rate 200]]
+in less than 5 seconds?
+[[rate 0]]

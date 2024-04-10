@@ -1,0 +1,25 @@
+[[rate 200]]
+
+Question number 3. [[slnc 300]] hard difficulty. 
+[[slnc 500]]
+
+What is the name of Tony Stark’s Daughter?
+[[slnc 400]]
+
+Is it. 
+[[slnc 200]]
+
+A, Morgan. 
+[[slnc 400]]
+
+B, Megan. 
+[[slnc 400]]
+
+Or C, Scarlett.
+
+# some Silence here for waiting for the answer
+[[slnc 3000]]
+
+The correct answer, is A, Tony Stark’s Daughter is called Morgan Stark.
+
+[[rate 0]] 

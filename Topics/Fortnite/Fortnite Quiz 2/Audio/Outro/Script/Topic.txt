@@ -1,0 +1,3 @@
+[[rate 200]]
+FORTNITE quiz.
+[[rate 0]]

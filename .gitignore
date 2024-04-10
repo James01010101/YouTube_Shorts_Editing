@@ -1,0 +1,20 @@
+
+
+# image file formats, keep the folders but not the actual images
+*.png
+*.jpg
+*.jpeg
+
+# video
+*.mp4
+
+# audio
+*.mp3
+*.wav
+*.aiff
+
+
+# specific folders
+Music/*
+Generic\ Assets/*
+*/__pycache__/*

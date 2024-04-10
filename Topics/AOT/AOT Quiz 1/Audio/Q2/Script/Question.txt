@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the full name, of the last owner, of the Cart Titan?
+[[rate 0]]

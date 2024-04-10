@@ -1,0 +1,3 @@
+[[rate 200]]
+The correct answer, is The Mauler Twins
+[[rate 0]]

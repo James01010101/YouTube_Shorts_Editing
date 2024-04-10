@@ -1,0 +1,3 @@
+[[rate 200]]
+What is the name of this Star Wars Character?
+[[rate 0]]
