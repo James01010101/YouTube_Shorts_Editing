@@ -15,8 +15,6 @@ import Interactive_Editor
 
 
 
-
-
 if __name__ == '__main__':
     
     # print info about available (color, font)
@@ -50,7 +48,7 @@ if __name__ == '__main__':
             
         else:
             start_time = time.time()
-            intro_final_video = Make_Video_Sections.make_intro(settings)
+            (intro_final_video, screenshot_time) = Make_Video_Sections.make_intro(settings)
             final_clips.append(intro_final_video)
             print(f"Intro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
             

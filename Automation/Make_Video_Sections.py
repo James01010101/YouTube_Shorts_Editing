@@ -455,7 +455,7 @@ def make_intro(settings, using_mp=False):
     
     
     #return intro_video_audio_combined
-    return intro_video_combined
+    return (intro_video_combined, intro_audio_duration_total - 1)
 
 
 

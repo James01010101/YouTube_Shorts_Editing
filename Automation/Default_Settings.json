@@ -206,5 +206,7 @@
     "comment_colour": "orange",
     "comment_kerning": 0,
     "comment_anim_overshoot": 1.9,
-	"comment_anim_right_move": 1100
+	"comment_anim_right_move": 1100,
+
+    "garbage": "garbage"
 }

@@ -128,7 +128,7 @@
 	"topic_intro_colour": "white",
 	"topic_intro_kerning": -10,
 	"topic_intro_interline": 0,
-	"topic_intro_position": [0, 0],
+	"topic_intro_position": [0, 25],
 
 	"three_questions_raw_text": "3 Questions",
 	"three_questions_font_size": 140,
@@ -205,7 +205,5 @@
 	"comment_kerning": 0,
 	"comment_anim_overshoot": 1.9,
 	"comment_anim_right_move": 1100,
-
-
 	"garbage": "garbage"
 }
