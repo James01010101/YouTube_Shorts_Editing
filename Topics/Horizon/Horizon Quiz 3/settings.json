@@ -11,11 +11,11 @@
 	"testing": 1,
 	"use_timer_frame": false,
 
-	"edit_in": 1,
+	"edit_in": 0,
 	"edit_q1": 0,
 	"edit_q2": 0,
 	"edit_q3": 0,
-	"edit_ou": 0,
+	"edit_ou": 1,
 
 	"render_video": 0,
 	"render_in": 0,
@@ -46,33 +46,39 @@
 
 
 
-	"question_1_raw_text": "What is the name\nof this character?",
+	"question_1_raw_text": "What is the name of this Character?",
+	"question_1_text_wrap_width": 20,
 	"question_1_font_size": 90,
+	"question_1_text_interline": -10,
 	"question_1_position": [0, -525],
 	"question_1_timer_position": ["center", 1250],
 
 	"answer_1_raw_text": "Aloy",
+	"answer_1_text_wrap_width": 20,
 	"answer_1_font_size": 200,
 	"answer_1_position": [0, 500],
 
 	"question_1_image_answer_path": "Topics/Horizon/Assets/Characters/Aloy/Aloy 2.png",
 	"question_1_image_answer_position": [0, 450],
 	"question_1_image_answer_width": 1080,
-	"question_1_image_use_helper": false,
+	"question_1_image_use_helper": true,
 
-	"question_1_image_helper_path": "Topics/ANSWER1HELPER",
-	"question_1_image_use_answer_for_both": true,
+	"question_1_image_helper_path": "Topics/Horizon/Assets/AI/Minerva 1.png",
+	"question_1_image_use_answer_for_both": false,
 	"question_1_image_helper_position": [0, 650],
 	"question_1_image_helper_width": 1080,
 
 
 
-	"question_2_raw_text": "What is the name\nof this Machine?",
+	"question_2_raw_text": "What is the name of this Machine?",
+	"question_2_text_wrap_width": 20,
 	"question_2_font_size": 100,
+	"question_2_text_interline": -10,
 	"question_2_position": [0, -500],
 	"question_2_timer_position": ["center", 1250],
 
 	"answer_2_raw_text": "Stalker",
+	"answer_2_text_wrap_width": 20,
 	"answer_2_font_size": 200,
 	"answer_2_position": [0, 500],
 
@@ -88,12 +94,15 @@
 
 
 
-	"question_3_raw_text": "What is the\nname of this\nSub-Function",
+	"question_3_raw_text": "What is the name of this Sub-Function?",
+	"question_3_text_wrap_width": 20,
 	"question_3_font_size": 100,
+	"question_3_text_interline": -10,
 	"question_3_position": [0, -500],
 	"question_3_timer_position": ["center", 1250],
 
 	"answer_3_raw_text": "Minerva",
+	"answer_3_text_wrap_width": 20,
 	"answer_3_font_size": 175,
 	"answer_3_position": [0, 500],
 
@@ -157,11 +166,10 @@
 	"question_title_position": [0, -750],
 	"question_title_kerning": -10,
 	"question_raw_text": "Question",
-
 	"question_title_pop_in_overshoot": 5,
+
 	"question_text_colour": "cyan",
 	"question_text_kerning": 0,
-	"question_text_interline": -10,
 
 	"answer_colour": "orange",
 	"answer_kerning": 0,

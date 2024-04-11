@@ -14,12 +14,13 @@ from Make_Video_Globals import Globals
 from PIL import Image
 import sys
 import numpy as np
+import time
 
 
 
 
 class Slider_Control:
-    def __init__(self, y_pos, label, settings_label, settings, value_range, increment, value_type, scaled_screen_size, manager):
+    def __init__(self, y_pos, label, part_label, settings_label, settings, value_range, increment, value_type, scaled_screen_size):
         self.slider_position = (scaled_screen_size[0] + 400, y_pos)
         self.slider_size = (300, 50)
         self.slider_label = label
@@ -28,11 +29,11 @@ class Slider_Control:
         self.value_range = value_range
         self.slider_increment = increment
         self.scaled_screen_size = scaled_screen_size
+        self.part_label = part_label # this will be used to access the parts dict
         
         
         self.revert_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.slider_position[0] + self.slider_size[0] + 225, self.slider_position[1]), (100, 50)),
-                                      text='Revert',
-                                      manager=manager)
+                                      text='Revert')
         
         
         # if -1 its just a raw number
@@ -46,8 +47,7 @@ class Slider_Control:
                                         relative_rect=pygame.Rect(self.slider_position, self.slider_size),
                                         start_value=self.settings[self.settings_label],
                                         value_range=self.value_range,
-                                        click_increment=self.slider_increment,
-                                        manager=manager)
+                                        click_increment=self.slider_increment)
             
         else: # its a tuple so slightly different
             self.original_value = settings[settings_label][self.value_type]
@@ -55,8 +55,7 @@ class Slider_Control:
                                         relative_rect=pygame.Rect(self.slider_position, self.slider_size),
                                         start_value=self.settings[self.settings_label][self.value_type],
                                         value_range=self.value_range,
-                                        click_increment=self.slider_increment,
-                                        manager=manager)
+                                        click_increment=self.slider_increment)
             
         
     
@@ -172,48 +171,185 @@ def run_pygame_editor(settings, section):
                                       text='Discard Settings',
                                       manager=manager)
     
+    # flip from timer frame to answer frame
+    helper_image_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((scaled_screen_size[0] + 760, scaled_screen_size[1] - 50), (200, 50)),
+                                      text='Swap Debug Image',
+                                      manager=manager)
+    
     
 
     
     all_slider_controls = []
     # text for this section
     if section == 'intro':
-        all_slider_controls.append(Slider_Control(0, "Quick Size", "quick_font_size", settings, (0, 300), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(50, "Quick Position Y", "quick_position", settings, (-1000, 1000), 25, 1, scaled_screen_size, manager))
         
-        all_slider_controls.append(Slider_Control(150, "How Well Size", "how_well_font_size", settings, (0, 300), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(200, "How Well Interline", "how_well_interline", settings, (-150, 150), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(250, "How Well Position Y", "how_well_position", settings, (-1000, 1000), 25, 1, scaled_screen_size, manager))
+        # this will store the text with a dirty bool so i can know if i need to recalculate it
+        saved_parts = {
+            'Quick': [None, True],
+            'How Well': [None, True],
+            'Topic': [None, True],
+            '3 Questions': [None, True],
+            'Seconds': [None, True],
+            'Background': [None, True]
+        }
         
-        all_slider_controls.append(Slider_Control(350, "Topic Size", "topic_intro_font_size", settings, (0, 300), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(400, "Topic Interline", "topic_intro_interline", settings, (-150, 150), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(450, "Topic Position Y", "topic_intro_position", settings, (-1000, 1000), 25, 1, scaled_screen_size, manager))
         
-        all_slider_controls.append(Slider_Control(550, "3 Questions Size", "three_questions_font_size", settings, (0, 300), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(600, "3 Questions Position Y", "three_questions_position", settings, (-1000, 1000), 25, 1, scaled_screen_size, manager))
+        all_slider_controls.append(Slider_Control(0, "Quick Size", "Quick", "quick_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(50, "Quick Position Y", "Quick", "quick_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
         
-        all_slider_controls.append(Slider_Control(700, "Seconds Size", "seconds_font_size", settings, (0, 300), 5, -1, scaled_screen_size, manager))
-        all_slider_controls.append(Slider_Control(750, "Seconds Position Y", "seconds_position", settings, (-1000, 1000), 25, 1, scaled_screen_size, manager))
-    
-    
-    
-    
-    
-    
-    
+        all_slider_controls.append(Slider_Control(150, "How Well Size", "How Well", "how_well_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(200, "How Well Interline", "How Well", "how_well_interline", settings, (-150, 150), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(250, "How Well Position Y", "How Well", "how_well_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(350, "Topic Size", "Topic", "topic_intro_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(400, "Topic Interline", "Topic", "topic_intro_interline", settings, (-150, 150), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(450, "Topic Position Y", "Topic", "topic_intro_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(550, "3 Questions Size", "3 Questions", "three_questions_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(600, "3 Questions Position Y", "3 Questions", "three_questions_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(700, "Seconds Size", "Seconds", "seconds_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(750, "Seconds Position Y", "Seconds", "seconds_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
 
-    # Define your colors
-    BLACK = (0, 0, 0)
+    elif section == 'q1':
+        
+        # this will store the text with a dirty bool so i can know if i need to recalculate it
+        saved_parts = {
+            'Title': [None, True],
+            'Question': [None, True],
+            'Answer Image': [None, True],
+            'Answer': [None, True],
+            'Background': [None, True],
+            'Timer': [None, True]
+        }
+        
+        all_slider_controls.append(Slider_Control(0, "Title Size", "Title", "question_title_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(50, "Title Position Y", "Title", "question_title_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(150, "Question Size", "Question", "question_1_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(200, "Question Position Y", "Question", "question_1_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(250, "Question Interline", "Question", "question_1_text_interline", settings, (-1000, 1000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(300, "Question Wrap Width", "Question", "question_1_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(400, "Answer Image Width", "Answer Image", "question_1_image_answer_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(450, "Answer Image PosX", "Answer Image", "question_1_image_answer_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(500, "Answer Image PosY", "Answer Image", "question_1_image_answer_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        # add helper image here (use answer image for helper they are both done in the same code, so dont need to seperate them)
+        all_slider_controls.append(Slider_Control(600, "Helper Image Width", "Answer Image", "question_1_image_helper_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(650, "Helper Image PosX", "Answer Image", "question_1_image_helper_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(700, "Helper Image PosY", "Answer Image", "question_1_image_helper_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(800, "Answer Size", "Answer", "answer_1_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(850, "Answer Position Y", "Answer", "answer_1_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(900, "Answer Wrap Width", "Answer", "answer_1_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+        
+        
+    elif section == 'q2':
+        
+        # this will store the text with a dirty bool so i can know if i need to recalculate it
+        saved_parts = {
+            'Title': [None, True],
+            'Question': [None, True],
+            'Answer Image': [None, True],
+            'Answer': [None, True],
+            'Background': [None, True],
+            'Timer': [None, True]
+        }
+        
+        all_slider_controls.append(Slider_Control(0, "Title Size", "Title", "question_title_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(50, "Title Position Y", "Title", "question_title_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(150, "Question Size", "Question", "question_2_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(200, "Question Position Y", "Question", "question_2_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(250, "Question Interline", "Question", "question_2_text_interline", settings, (-1000, 1000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(300, "Question Wrap Width", "Question", "question_2_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(400, "Answer Image Width", "Answer Image", "question_2_image_answer_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(450, "Answer Image PosX", "Answer Image", "question_2_image_answer_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(500, "Answer Image PosY", "Answer Image", "question_2_image_answer_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        # add helper image here (use answer image for helper they are both done in the same code, so dont need to seperate them)
+        all_slider_controls.append(Slider_Control(600, "Helper Image Width", "Answer Image", "question_2_image_helper_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(650, "Helper Image PosX", "Answer Image", "question_2_image_helper_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(700, "Helper Image PosY", "Answer Image", "question_2_image_helper_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(800, "Answer Size", "Answer", "answer_2_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(850, "Answer Position Y", "Answer", "answer_2_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(900, "Answer Wrap Width", "Answer", "answer_2_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+        
     
-    # Load your video clip (replace 'your_video.mp4' with your actual video file path)
-    clip = VideoFileClip('Topics/Fortnite/Fortnite Quiz 3/Finished/Fortnite Quiz 3.mp4')
+    elif section == 'q3':
+        
+        # this will store the text with a dirty bool so i can know if i need to recalculate it
+        saved_parts = {
+            'Title': [None, True],
+            'Question': [None, True],
+            'Answer Image': [None, True],
+            'Answer': [None, True],
+            'Background': [None, True],
+            'Timer': [None, True]
+        }
+        
+        all_slider_controls.append(Slider_Control(0, "Title Size", "Title", "question_title_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(50, "Title Position Y", "Title", "question_title_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(150, "Question Size", "Question", "question_3_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(200, "Question Position Y", "Question", "question_3_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(250, "Question Interline", "Question", "question_3_text_interline", settings, (-1000, 1000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(300, "Question Wrap Width", "Question", "question_3_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(400, "Answer Image Width", "Answer Image", "question_3_image_answer_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(450, "Answer Image PosX", "Answer Image", "question_3_image_answer_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(500, "Answer Image PosY", "Answer Image", "question_3_image_answer_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        # add helper image here (use answer image for helper they are both done in the same code, so dont need to seperate them)
+        all_slider_controls.append(Slider_Control(600, "Helper Image Width", "Answer Image", "question_3_image_helper_width", settings, (0, 2000), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(650, "Helper Image PosX", "Answer Image", "question_3_image_helper_position", settings, (-500, 500), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(700, "Helper Image PosY", "Answer Image", "question_3_image_helper_position", settings, (0, 2000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(800, "Answer Size", "Answer", "answer_3_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(850, "Answer Position Y", "Answer", "answer_3_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(900, "Answer Wrap Width", "Answer", "answer_3_text_wrap_width", settings, (0, 50), 1, -1, scaled_screen_size))
+    
+    if section == 'outro':
+        
+        # this will store the text with a dirty bool so i can know if i need to recalculate it
+        saved_parts = {
+            'Thanks': [None, True],
+            'Topic': [None, True],
+            'Subscribe': [None, True],
+            'Subscribe Box': [None, True],
+            'Comment': [None, True],
+            'Background': [None, True]
+        }
+        
+        
+        all_slider_controls.append(Slider_Control(0, "Thanks Size", "Thanks", "thanks_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(50, "Thanks Position Y", "Thanks", "thanks_text_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(100, "Thanks Interline", "Thanks", "thanks_interline", settings, (-150, 150), 5, -1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(200, "Topic Size", "Topic", "topic_outro_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(250, "Topic Interline", "Topic", "topic_outro_interline", settings, (-150, 150), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(300, "Topic Position Y", "Topic", "topic_outro_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(400, "Subscribe Size", "Subscribe", "subscribe_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(450, "Subscribe Position Y", "Subscribe", "subscribe_text_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        
+        all_slider_controls.append(Slider_Control(550, "Subscribe Size X", "Subscribe Box", "subscribe_box_size", settings, (0, 1100), 5, 0, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(600, "Subscribe Size Y", "Subscribe Box", "subscribe_box_size", settings, (0, 500), 5, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(650, "Subscribe Box PosY", "Subscribe Box", "subscribe_box_position", settings, (0, 2000), 5, 1, scaled_screen_size))
+
+        all_slider_controls.append(Slider_Control(750, "Comment Size", "Comment", "comment_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(800, "Comment Position Y", "Comment", "comment_text_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(850, "Comment Interline", "Comment", "comment_interline", settings, (-150, 150), 5, -1, scaled_screen_size))
+
+    
 
 
     # variables i need
     image_dirty = True
     editing_image = None
-        
-        
         
     # Main game loop
     clock = pygame.time.Clock()
@@ -233,12 +369,14 @@ def run_pygame_editor(settings, section):
                 for sc in all_slider_controls:
                     if event.ui_element == sc.get_id():
                         sc.set_slider_value(event.value)
+                        saved_parts[sc.part_label][1] = True
             
             
         # check if any revert buttons have been pressed  
         for sc in all_slider_controls:  
             if sc.revert_button.check_pressed():
-                sc.revert_value()       
+                sc.revert_value()  
+                saved_parts[sc.part_label][1] = True     
             
 
 
@@ -256,25 +394,75 @@ def run_pygame_editor(settings, section):
         elif discard_image_button.check_pressed():
             running = False
             
-        
-
-
-           
+        elif helper_image_button.check_pressed():
+            settings['use_timer_frame'] = not settings['use_timer_frame']
+            image_dirty = True
+            
+            
+    
         
         # Fill the background
         manager.update(time_delta)
-        window.fill(BLACK)
+        window.fill((0, 0, 0))
         
         
         # if the controls have change i need to recalculate the image
         if image_dirty:
             # recalculate the new image
             if section == 'intro':
-
+                
+                start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time) = Make_Video_Sections.make_intro(settings)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_intro(settings, saved_parts)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
+                
+                end_editing_time = time.time()
+                print("Intro Editing Took: ", round(end_editing_time - start_editing_time, 2), " seconds\n")
+                
+            elif section == 'q1':
+                
+                start_editing_time = time.time()
+                # settings will already be kept up to date so just make the new image
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 1)
+                editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
+                image_dirty = False
+                
+                end_editing_time = time.time()
+                print("Q1 Editing Took: ", round(end_editing_time - start_editing_time, 2), " seconds\n")
+                
+            elif section == 'q2':
+                
+                start_editing_time = time.time()
+                # settings will already be kept up to date so just make the new image
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 2)
+                editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
+                image_dirty = False
+                
+                end_editing_time = time.time()
+                print("Q2 Editing Took: ", round(end_editing_time - start_editing_time, 2), " seconds\n")
+                
+            elif section == 'q3':
+                
+                start_editing_time = time.time()
+                # settings will already be kept up to date so just make the new image
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 3)
+                editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
+                image_dirty = False
+                
+                end_editing_time = time.time()
+                print("Q3 Editing Took: ", round(end_editing_time - start_editing_time, 2), " seconds\n")
+                
+            elif section == 'outro':
+                
+                start_editing_time = time.time()
+                # settings will already be kept up to date so just make the new image
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_outro(settings, saved_parts)
+                editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
+                image_dirty = False
+                
+                end_editing_time = time.time()
+                print("Outro Editing Took: ", round(end_editing_time - start_editing_time, 2), " seconds\n")
         
         
         # Display a frame from the clip
@@ -296,7 +484,6 @@ def run_pygame_editor(settings, section):
 
     # Quit PyGame
     pygame.quit()
-    sys.exit()
 
 
 

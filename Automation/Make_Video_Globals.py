@@ -2,7 +2,7 @@
 import json
 
 class Globals:
-    topic = "Horizon"
+    topic = "TLOU"
     quiz_num = "3"
     
 
@@ -17,169 +17,7 @@ class Globals:
     screen_size = (1080, 1920)
     
     # go through each topic so i can save its variables so i dont have to change everything every time
-    if topic == "Horizon":
-            
-        ''' Text '''
-        ''' Fonts '''
-        # Generic = "Arial-Rounded-MT-Bold"
-        # AOT = "Cloister-Black-Light"
-        
-        # seperating these out because some fonts arnt easy to read but i still want them for the topic question and titles
-        font_topic = "horizon" # the font for the topic eg (AOT)
-        font_title = "horizon" # used for Question titles
-        font_general_text = "Arial-Rounded-MT-Bold" # use for all other text
-        
-        
-        ''' Text Borders '''
-        text_border_width = 40
-        text_border_colour = 'black'
-        
-        
-        # have the debug frame be with the timer so i can make sure its not overlapping
-        use_timer_frame = True
-        
-        
-        
-        #background
-        background_image_path = f"{topic}/Assets/Backgrounds/FW 1.jpg"
-        background_position = (0, 0)
-        use_background_width = False # either start with width or height
-        
-        # is use width use screen_size[0] else use screen_size[1]
-        background_size = screen_size[1]
-        
-
-        # Question 1 easy
-        question_1_raw_text = "What is the name\nof this Machine?"
-        question_1_font_size = 100
-        question_1_position = ("center", -550)
-        question_1_timer_position = (75, 625)
-        
-        answer_1_raw_text = "Scrapper"
-        answer_1_font_size = 175
-        answer_1_position = ("center", 500)
-        answer_1_image_path = f"{topic}/Assets/Machines/Scrapper/Scrapper 3.jpg"
-        answer_1_image_helper = True # if it is shown for the whole question or just the answer
-        answer_1_image_position = (0, 625)
-        answer_1_image_width = screen_size[0] + 100
-        
-        
-        # Question 2 medium
-        question_2_raw_text = "What is the name\nof this Character?"
-        question_2_font_size = 100
-        question_2_position = ("center", -550)
-        question_2_timer_position = (75, 625)
-        
-        answer_2_raw_text = "Rost"
-        answer_2_font_size = 175
-        answer_2_position = ("center", 500)
-        answer_2_image_path = f"{topic}/Assets/Characters/Rost/Rost 1.jpg"
-        answer_2_image_helper = True
-        answer_2_image_position = (-350, 625)
-        answer_2_image_width = screen_size[0] + 400
-        
-        
-        # Question 3 hard
-        question_3_raw_text = "Name the Sub-Func\ntasked with restoring\nplant life to Earth?"
-        question_3_font_size = 80
-        question_3_position = ("center", -525)
-        question_3_timer_position = ('center')
-        
-        answer_3_raw_text = "Demeter"
-        answer_3_font_size = 175
-        answer_3_position = ("center", 500)
-        answer_3_image_path = f"{topic}/Assets/AI/Demeter.png"
-        answer_3_image_helper = False
-        answer_3_image_position = ('center', 550)
-        answer_3_image_width = screen_size[0] + 500
-        
-        
-        
-        ''' Sections '''
-        ''' Intro '''
-        quick_raw_text = "Quick"
-        quick_font_size = 275
-        quick_colour = 'yellow'
-        quick_kerning = 0
-        quick_position = (0, -750)
-        
-        how_well_raw_text = "How Well Do\nYou Know"
-        how_well_font_size = 140
-        how_well_colour = 'cyan'
-        how_well_kerning = 0
-        how_well_interline = -25
-        how_well_position = ('center', -400)
-        
-        topic_intro_font_size = 180
-        topic_intro_colour = 'white'
-        topic_intro_kerning = -10
-        topic_intro_interline = 0
-        topic_intro_position = ("center", 50)
-        
-        three_questions_raw_text = "3 Questions"
-        three_questions_font_size = 150
-        three_questions_colour = 'orange'
-        three_questions_kerning = 0
-        three_questions_position = ("center", 425)
-        
-        seconds_raw_text = "3 Seconds"
-        seconds_font_size = 150
-        seconds_colour = 'orange'
-        seconds_kerning = 0
-        seconds_position = ("center", 600)
-        
-        
-        
-        ''' Questions'''
-        question_title_font_size = 170
-        question_title_colour = 'yellow'
-        question_title_position = (0, -750)
-        question_title_kerning = -10
-        
-        question_raw_text = 'Question'
-        
-        question_text_colour = 'cyan'
-        question_text_kerning = 0
-        question_text_interline = -20
-        
-        answer_colour = 'orange'
-        answer_kerning = 0
-        answer_interline = -20
-        
-        
-        
-        ''' Outro '''
-        thanks_raw_text = "Thanks For\nPlaying"
-        thanks_font_size = 160
-        thanks_text_position = (0, -675)
-        thanks_colour = 'yellow'
-        thanks_kerning = 0
-        thanks_interline = -20
-        
-        topic_outro_position = ("center", -190)
-        topic_outro_font_size = 180
-        topic_outro_kerning = -10
-        topic_outro_interline = 0
-        topic_outro_colour = 'white'
-        
-        subscribe_raw_text = "Subscribe!"
-        subscribe_font_size = 150
-        subscribe_text_position = ("center", 250)
-        subscribe_colour = 'white'
-        subscribe_kerning = 0
-        
-        subscribe_box_position = ("center", 1105)
-        subscribe_box_size = (850, 200)
-        subscribe_box_colour = (255, 0, 0) # this has to be rgb instead of name
-        
-        comment_raw_text = "Comment Your\nScore Below"
-        comment_font_size = 115
-        comment_text_position = ("center", 550)
-        comment_interline = 0
-        comment_colour = 'orange'
-        comment_kerning = 0
-        
-    elif topic == "TLOU":
+    if topic == "TLOU":
             
         ''' Text '''
         ''' Fonts '''
@@ -314,7 +152,7 @@ class Globals:
         
         ''' Outro '''
         thanks_raw_text = "Thanks For\nPlaying"
-        thanks_font_size = 250
+        thanks_font_size = 100
         thanks_text_position = (0, -675)
         thanks_colour = 'yellow'
         thanks_kerning = 0

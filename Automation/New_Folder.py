@@ -17,7 +17,7 @@ def write_json_settings(settings, file):
                     'question_2_timer_position', 'answer_2_position', 'question_3_timer_position', 
                     'answer_3_position', 'quick_pop_in_overshoot', 'how_well_position', 
                     'topic_intro_position', 'three_questions_anim_out_time', 
-                    'question_raw_text', 'question_text_interline', 
+                    'question_text_kerning', 'question_text_interline', 
                     'thanks_pop_in_overshoot', 'topic_outro_colour', 'subscribe_kerning', 'subscribe_box_colour',
                     'question_1_image_use_helper', 'question_2_image_use_helper', 'question_3_image_use_helper']
     
@@ -41,10 +41,10 @@ def write_json_settings(settings, file):
         
         # specific cases
         if key in ["question_1_timer_position", "question_2_timer_position", "question_3_timer_position"]:
-            file.write(f"[\"center\", 1250],\n")
+            file.write(f"[\"center\", {value[1]}],\n")
             
         elif key == "subscribe_box_position":
-            file.write(f"[\"center\", 1060],\n")
+            file.write(f"[\"center\", {value[1]}],\n")
             
         # to deal with the last comma
         elif key == "garbage":

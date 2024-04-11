@@ -24,7 +24,7 @@ if __name__ == '__main__':
     settings = Globals.read_settings_file(Globals.topic, Globals.quiz_num)
     
     
-    use_pygame_editor = True
+    use_pygame_editor = False
         
         
     
@@ -48,36 +48,101 @@ if __name__ == '__main__':
             
         else:
             start_time = time.time()
-            (intro_final_video, screenshot_time) = Make_Video_Sections.make_intro(settings)
+            
+            saved_parts = {
+                'Quick': [None, True],
+                'How Well': [None, True],
+                'Topic': [None, True],
+                '3 Questions': [None, True],
+                'Seconds': [None, True],
+                'Background': [None, True]
+            }
+            (intro_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_intro(settings, saved_parts)
             final_clips.append(intro_final_video)
             print(f"Intro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
             
     
     if settings['edit_q1']:
-        start_time = time.time()
-        q1_final_video = Make_Video_Sections.make_questions(settings, 1)
-        final_clips.append(q1_final_video)
-        print(f"Q1 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        if use_pygame_editor:
+            Interactive_Editor.run_pygame_editor(settings, 'q1')
+            
+        else:
+            start_time = time.time()
+            
+            saved_parts = {
+                'Title': [None, True],
+                'Question': [None, True],
+                'Answer Image': [None, True],
+                'Answer': [None, True],
+                'Background': [None, True],
+                'Timer': [None, True]
+            }
+            
+            (q1_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 1)
+            final_clips.append(q1_final_video)
+            print(f"Q1 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
             
     
     if settings['edit_q2']:
-        start_time = time.time()
-        q2_final_video = Make_Video_Sections.make_questions(settings, 2)
-        final_clips.append(q2_final_video)
-        print(f"Q2 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        if use_pygame_editor:
+            Interactive_Editor.run_pygame_editor(settings, 'q2')
+            
+        else:
+            start_time = time.time()
+            
+            saved_parts = {
+                'Title': [None, True],
+                'Question': [None, True],
+                'Answer Image': [None, True],
+                'Answer': [None, True],
+                'Background': [None, True],
+                'Timer': [None, True]
+            }
+            
+            (q2_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 2)
+            final_clips.append(q2_final_video)
+            print(f"Q2 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
 
     if settings['edit_q3']:
-        start_time = time.time()
-        q3_final_video = Make_Video_Sections.make_questions(settings, 3)
-        final_clips.append(q3_final_video)
-        print(f"Q3 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        if use_pygame_editor:
+            Interactive_Editor.run_pygame_editor(settings, 'q3')
+            
+        else:
+            start_time = time.time()
+            
+            saved_parts = {
+                'Title': [None, True],
+                'Question': [None, True],
+                'Answer Image': [None, True],
+                'Answer': [None, True],
+                'Background': [None, True],
+                'Timer': [None, True]
+            }
+            
+            (q3_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 3)
+            final_clips.append(q3_final_video)
+            print(f"Q3 Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
 
     
     if settings['edit_ou']:
-        start_time = time.time()
-        outro_final_video = Make_Video_Sections.make_outro(settings)
-        final_clips.append(outro_final_video)
-        print(f"Outro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
+        if use_pygame_editor:
+            Interactive_Editor.run_pygame_editor(settings, 'outro')
+            
+        else:
+            start_time = time.time()
+            
+            saved_parts = {
+                'Thanks': [None, True],
+                'Topic': [None, True],
+                'Subscribe': [None, True],
+                'Subscribe Box': [None, True],
+                'Comment': [None, True],
+                'Background': [None, True]
+            }
+            
+            (outro_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_outro(settings, saved_parts)
+            final_clips.append(outro_final_video)
+            print(f"Outro Editing Took: {round(time.time() - start_time, 2)} seconds\n\n")
     
     
     full_edit_end_time = time.time()
