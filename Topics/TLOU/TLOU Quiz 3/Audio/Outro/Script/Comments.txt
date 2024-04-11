@@ -1,0 +1,3 @@
+[[rate 200]]
+Leave your score in the comments, and let me know if you got all 3 questions correct.
+[[rate 0]]

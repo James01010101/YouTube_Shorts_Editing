@@ -1,0 +1,216 @@
+{
+	"screen_size": [1080, 1920],
+	"fps": 60,
+
+	"topic": "TLOU",
+	"full_topic": "The Last Of Us",
+	"quiz_num": "3",
+
+
+
+	"testing": 0,
+	"use_timer_frame": false,
+
+	"edit_in": 1,
+	"edit_q1": 1,
+	"edit_q2": 1,
+	"edit_q3": 1,
+	"edit_ou": 1,
+
+	"render_video": 1,
+	"render_in": 0,
+	"render_q1": 0,
+	"render_q2": 0,
+	"render_q3": 0,
+	"render_ou": 0,
+
+
+
+	"font_topic": "Headliner-No.-45",
+	"font_title": "Headliner-No.-45",
+	"font_general_text": "Headliner-No.-45",
+
+	"text_border_width": 40,
+	"text_border_colour": "black",
+
+	"timer_path": "Generic Assets/Loading Circle.mov",
+
+	"background_image_path": "Topics/TLOU/Assets/Backgrounds/Tralier 1.jpg",
+	"background_position": [0, 0],
+	"use_background_width": false,
+	"background_size": 1920,
+
+	"question_silence_duration": 3,
+	"question_end_silence_duration": 2,
+	"title_to_question_silence": 0.5,
+
+
+
+	"question_1_raw_text": "What is the full name of Joel's Brother?",
+	"question_1_text_wrap_width": 22,
+	"question_1_font_size": 125,
+	"question_1_text_interline": -5,
+	"question_1_position": [0, -475],
+	"question_1_timer_position": ["center", 1250],
+
+	"answer_1_raw_text": "Tommy Miller",
+	"answer_1_text_wrap_width": 20,
+	"answer_1_font_size": 190,
+	"answer_1_position": [0, 500],
+
+	"question_1_image_answer_path": "Topics/TLOU/Assets/Characters/Tommy/Tommy 2.jpg",
+	"question_1_image_answer_position": [-60, 525],
+	"question_1_image_answer_width": 1180,
+	"question_1_image_use_helper": false,
+
+	"question_1_image_helper_path": "Topics/ANSWER1HELPER",
+	"question_1_image_use_answer_for_both": false,
+	"question_1_image_helper_position": [0, 650],
+	"question_1_image_helper_width": 1080,
+
+
+
+	"question_2_raw_text": "What was the name of Bill's Partner?",
+	"question_2_text_wrap_width": 18,
+	"question_2_font_size": 130,
+	"question_2_text_interline": -5,
+	"question_2_position": [0, -475],
+	"question_2_timer_position": ["center", 1250],
+
+	"answer_2_raw_text": "Frank",
+	"answer_2_text_wrap_width": 20,
+	"answer_2_font_size": 250,
+	"answer_2_position": [0, 500],
+
+	"question_2_image_answer_path": "Topics/TLOU/Assets/Characters/Frank/Frank TV 1.jpeg",
+	"question_2_image_answer_position": [-185, 600],
+	"question_2_image_answer_width": 1580,
+	"question_2_image_use_helper": false,
+
+	"question_2_image_helper_path": "Topics/ANSWER2HELPER",
+	"question_2_image_use_answer_for_both": false,
+	"question_2_image_helper_position": [0, 650],
+	"question_2_image_helper_width": 1080,
+
+
+
+	"question_3_raw_text": "What is the name of this Last of Us Character?",
+	"question_3_text_wrap_width": 18,
+	"question_3_font_size": 130,
+	"question_3_text_interline": -10,
+	"question_3_position": [0, -425],
+	"question_3_timer_position": ["center", 1250],
+
+	"answer_3_raw_text": "James",
+	"answer_3_text_wrap_width": 20,
+	"answer_3_font_size": 250,
+	"answer_3_position": [0, 500],
+
+	"question_3_image_answer_path": "Topics/TLOU/Assets/Characters/James/James Background Removed.png",
+	"question_3_image_answer_position": [-85, 650],
+	"question_3_image_answer_width": 1280,
+	"question_3_image_use_helper": false,
+
+	"question_3_image_helper_path": "Topics/ANSWER3HELPER",
+	"question_3_image_use_answer_for_both": true,
+	"question_3_image_helper_position": [0, 650],
+	"question_3_image_helper_width": 1080,
+
+
+
+	"quick_raw_text": "Quick",
+	"quick_font_size": 300,
+	"quick_colour": "yellow",
+	"quick_kerning": 0,
+	"quick_position": [0, -700],
+	"quick_pop_in_overshoot": 7,
+
+	"how_well_raw_text": "How Well Do\nYou Know",
+	"how_well_font_size": 175,
+	"how_well_colour": "cyan",
+	"how_well_kerning": 0,
+	"how_well_interline": -10,
+	"how_well_position": [0, -400],
+
+	"topic_intro_one_word_per_line": false,
+	"topic_intro_font_size": 200,
+	"topic_intro_colour": "white",
+	"topic_intro_kerning": 0,
+	"topic_intro_interline": 0,
+	"topic_intro_position": [0, 0],
+
+	"three_questions_raw_text": "3 Questions",
+	"three_questions_font_size": 200,
+	"three_questions_colour": "orange",
+	"three_questions_kerning": 0,
+	"three_questions_position": [0, 350],
+	"three_questions_anim_overshoot": 1.9,
+	"three_questions_anim_right_move": 1100,
+	"three_questions_anim_in_time": 1,
+	"three_questions_anim_out_time": 1,
+
+	"seconds_raw_text": "3 Seconds",
+	"seconds_font_size": 200,
+	"seconds_colour": "orange",
+	"seconds_kerning": 0,
+	"seconds_position": [0, 550],
+	"seconds_anim_overshoot": 1.9,
+	"seconds_anim_right_move": 1100,
+	"seconds_anim_in_time": 1,
+	"seconds_anim_out_time": 1,
+
+
+
+	"question_title_font_size": 250,
+	"question_title_colour": "yellow",
+	"question_title_position": [0, -725],
+	"question_title_kerning": 0,
+	"question_raw_text": "Question",
+	"question_title_pop_in_overshoot": 5,
+	"question_text_colour": "cyan",
+	"question_text_kerning": 0,
+
+	"answer_colour": "orange",
+	"answer_kerning": 0,
+	"answer_interline": 0,
+	"answer_anim_overshoot": 1.9,
+	"answer_anim_right_move": 1100,
+	"answer_anim_out_time": 1,
+
+
+
+	"thanks_raw_text": "Thanks For\nPlaying",
+	"thanks_font_size": 200,
+	"thanks_text_position": [0, -650],
+	"thanks_colour": "yellow",
+	"thanks_kerning": 0,
+	"thanks_interline": -15,
+	"thanks_pop_in_overshoot": 7,
+
+	"topic_outro_one_word_per_line": false,
+	"topic_outro_position": [0, -225],
+	"topic_outro_font_size": 200,
+	"topic_outro_kerning": 0,
+	"topic_outro_interline": 0,
+	"topic_outro_colour": "white",
+
+	"subscribe_raw_text": "Subscribe!",
+	"subscribe_font_size": 200,
+	"subscribe_text_position": [0, 150],
+	"subscribe_colour": "white",
+	"subscribe_kerning": 0,
+
+	"subscribe_box_position": ["center", 980],
+	"subscribe_box_size": [750, 215],
+	"subscribe_box_colour": [255, 0, 0],
+
+	"comment_raw_text": "Comment Your\nScore Below",
+	"comment_font_size": 175,
+	"comment_text_position": [0, 500],
+	"comment_interline": 0,
+	"comment_colour": "orange",
+	"comment_kerning": 0,
+	"comment_anim_overshoot": 1.9,
+	"comment_anim_right_move": 1100,
+	"garbage": "garbage"
+}
