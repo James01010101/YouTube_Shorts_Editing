@@ -12,18 +12,18 @@ from Make_Video_Globals import Globals
 def write_json_settings(settings, file):
     
     # add some spacing \n  to make it easier to read
-    add_1_line = ['fps', 'use_timer_frame', 'edit_ou', 'font_general_text', 'text_border_colour', 
-                    'timer_path', 'background_size', 'question_1_timer_position', 'answer_1_position', 
+    add_1_line = ['fps', 'use_timer_frame', 'font_general_text', 'text_border_colour', 
+                    'timer_size', 'background_size', 'question_1_timer_position', 'answer_1_position', 
                     'question_2_timer_position', 'answer_2_position', 'question_3_timer_position', 
                     'answer_3_position', 'quick_pop_in_overshoot', 'how_well_position', 
-                    'topic_intro_position', 'three_questions_anim_out_time', 
-                    'question_text_kerning', 'question_text_interline', 
-                    'thanks_pop_in_overshoot', 'topic_outro_colour', 'subscribe_kerning', 'subscribe_box_colour',
-                    'question_1_image_use_helper', 'question_2_image_use_helper', 'question_3_image_use_helper']
+                    'topic_intro_position', 'three_questions_anim_out_time', 'question_text_kerning', 
+                    'question_text_interline', 'thanks_pop_in_overshoot', 'topic_outro_colour', 
+                    'subscribe_kerning', 'subscribe_box_colour', 'question_1_image_use_helper', 
+                    'question_2_image_use_helper', 'question_3_image_use_helper']
     
     add_2_line = []
     
-    add_3_line = ['quiz_num', 'render_ou', 'title_to_question_silence', "question_1_image_helper_width", 
+    add_3_line = ['quiz_num', 'use_timer_frame', 'title_to_question_silence', "question_1_image_helper_width", 
                   "question_2_image_helper_width", "question_3_image_helper_width", 'seconds_anim_out_time', 
                   'answer_anim_out_time']
         
@@ -40,14 +40,7 @@ def write_json_settings(settings, file):
         
         
         # specific cases
-        if key in ["question_1_timer_position", "question_2_timer_position", "question_3_timer_position"]:
-            file.write(f"[\"center\", {value[1]}],\n")
-            
-        elif key == "subscribe_box_position":
-            file.write(f"[\"center\", {value[1]}],\n")
-            
-        # to deal with the last comma
-        elif key == "garbage":
+        if key == "garbage":
             file.write(f"\"garbage\"\n")
             
             
@@ -64,6 +57,16 @@ def write_json_settings(settings, file):
         elif type(value) == bool:
             if value: file.write("true,\n")
             else: file.write("false,\n")
+            
+        elif type(value) == list:
+            file.write("[")
+            for i in range(len(value)):
+                if i != 0: file.write(", ")
+                
+                if type(value[i]) == str: file.write(f"\"{value[i]}\"")
+                else: file.write(f"{value[i]}")
+            file.write("],\n")
+                
             
         else:
             file.write(f"{value},\n")

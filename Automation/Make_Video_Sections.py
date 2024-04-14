@@ -27,11 +27,16 @@ class MyBarLogger(ProgressBarLogger):
         print(bar, attr, value)
         
         
+
+
+video_preset = "placebo"
+video_codec = "h264_videotoolbox" # h264_videotoolbox, libx264
+        
         
         
         
 # main make intro function
-def make_intro(settings, saved_parts):
+def make_intro_old(settings, saved_parts):
     
     intro_start_time = time.time()
     
@@ -463,11 +468,11 @@ def make_intro(settings, saved_parts):
         intro_video_audio_combined.write_videofile(
                                 filename=f"{quiz_path}Finished/intro.mp4", 
                                 fps=settings['fps'],  # Frame rate
-                                codec="libx264",  # Video codec (h264) or 'mpeg4' could also work
+                                codec=video_codec,  # Video codec (h264) or 'mpeg4' could also work
                                 audio=True, # Do not include audio
                                 audio_codec="aac",  # Audio codec
                                 audio_bitrate="192k",  # Audio bitrate
-                                preset="medium",  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
+                                preset=video_preset,  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
                                 threads=8,  # Number of threads for processing (None for auto)
                                 ffmpeg_params=[],  # Additional FFmpeg parameters: CRF for quality lossless => ['-qp', '0']
                                 logger="bar"
@@ -485,7 +490,546 @@ def make_intro(settings, saved_parts):
 
 
 # main make intro function
-def make_questions(settings, saved_parts, question_num):
+def make_intro(settings, saved_parts, render_intro):
+    
+    intro_start_time = time.time()
+    
+    quiz_path = f"Topics/{settings['topic']}/{settings['topic']} Quiz {settings['quiz_num']}/"
+    
+    # load in all audio
+    audio_quick = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Quick.wav")
+    audio_how_well = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/How_Well.wav")
+    audio_topic = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Topic.wav")
+    audio_prove = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Prove.wav")
+    audio_3_questions = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/3_Questions.wav")
+    audio_x_seconds = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/X_Seconds.wav")
+    
+    # put together the audio
+    intro_audio = concatenate_audioclips(
+        [audio_quick,
+         audio_how_well, 
+         audio_topic,
+         audio_prove,
+         audio_3_questions, 
+         audio_x_seconds,
+         Helpers.generate_silence(1.0) ])
+    
+    intro_audio_duration_total = intro_audio.duration
+    
+    print_audio_times = False
+    if print_audio_times:
+        running_time = 0
+        print("Intro Audio Durations:")
+        # quickly print the length of each clip and how long it is
+        print("Quick:    ", audio_quick.duration, "(", round(running_time, 2), ")")
+        running_time += audio_quick.duration
+        print("How Well: ", audio_how_well.duration, "(", round(running_time, 2), ")")
+        running_time += audio_how_well.duration
+        print("Topic:    ", audio_topic.duration, "(", round(running_time, 2), ")")
+        running_time += audio_topic.duration
+        print("Prove:    ", audio_prove.duration, "(", round(running_time, 2), ")")
+        running_time += audio_prove.duration
+        print("3 Quests: ", audio_3_questions.duration, "(", round(running_time, 2), ")")
+        running_time += audio_3_questions.duration
+        print("X Secs:   ", audio_x_seconds.duration, "(", round(running_time, 2), ")")
+        running_time += audio_x_seconds.duration
+        print("Silence:  ", "1.00", "(", round(running_time, 2), ")")
+        print("Total:    ", round(intro_audio_duration_total, 2))
+    
+    print("Editing Video Intro")
+    
+    
+    
+    
+    # Quick Text
+    # intro animation
+    if saved_parts['Quick'][0][0] is None or saved_parts['Quick'][1] == True:
+        quick_start_time = time.time()
+        intro_quick_text = ( TextClip(settings['quick_raw_text'], fontsize=settings['quick_font_size'], 
+                                    font=settings['font_title'], 
+                                    color=settings['quick_colour'], 
+                                    size=settings['screen_size'], 
+                                    kerning=settings['quick_kerning'])
+                            .set_start(0)
+                            .set_duration(intro_audio_duration_total))
+        
+        width, height = intro_quick_text.size
+        intro_quick_text = intro_quick_text.resize(
+            lambda t: Animations.pop_in_pop_out_size(t, audio_quick.duration, 1, intro_audio_duration_total, width, height, settings['quick_pop_in_overshoot']))
+        intro_quick_text = intro_quick_text.set_position(
+            lambda t: Animations.pop_in_pop_out_position(t, audio_quick.duration, 1, intro_audio_duration_total, width, height, settings['screen_size'], settings['quick_position'][0], settings['quick_position'][1], settings['quick_pop_in_overshoot']))
+            
+        
+        
+        
+        intro_quick_text_black_border = ( TextClip(settings['quick_raw_text'], fontsize=settings['quick_font_size'], 
+                                                font=settings['font_title'], 
+                                                color=settings['text_border_colour'], 
+                                                size=settings['screen_size'], 
+                                                kerning=settings['quick_kerning'], 
+                                                stroke_width=settings['text_border_width'], 
+                                                stroke_color=settings['text_border_colour'])
+                                        .set_start(0)
+                                        .set_duration(intro_audio_duration_total))
+        
+        width, height = intro_quick_text_black_border.size
+        intro_quick_text_black_border = intro_quick_text_black_border.resize(
+            lambda t: Animations.pop_in_pop_out_size(t, audio_quick.duration, 1, intro_audio_duration_total, width, height, settings['quick_pop_in_overshoot']))
+        intro_quick_text_black_border = intro_quick_text_black_border.set_position(
+            lambda t: Animations.pop_in_pop_out_position(t, audio_quick.duration, 1, intro_audio_duration_total, width, height, settings['screen_size'], settings['quick_position'][0], settings['quick_position'][1], settings['quick_pop_in_overshoot']))
+        
+        #intro_quick_text_combined = CompositeVideoClip([intro_quick_text_black_border, intro_quick_text], size=settings['screen_size'])
+        #intro_quick_text_combined = intro_quick_text_combined.crossfadeout(1)
+        
+        intro_quick_text_black_border = intro_quick_text_black_border.crossfadeout(1)
+        intro_quick_text = intro_quick_text.crossfadeout(1)
+        
+        # update parts
+        saved_parts['Quick'][0][0] = intro_quick_text_black_border
+        saved_parts['Quick'][0][1] = intro_quick_text
+        saved_parts['Quick'][1] = False
+        quick_end_time = time.time()
+        print(f"Text Time - Quick: {round(quick_end_time - quick_start_time, 2)}")
+    
+    
+    
+    
+    
+    # How well do you know text
+    if saved_parts['How Well'][0][0] is None or saved_parts['How Well'][1] == True:
+        how_well_start_time = time.time()
+        
+        full_text = settings['how_well_raw_text']
+        char_duration = audio_how_well.duration / len(full_text)
+        clips = []
+        border_clips = []
+        if not settings['testing']:
+            for i in range(1, len(full_text) + 1):
+                if i <= 11:
+                    new_text = full_text[:i] + '\n'
+                else:
+                    new_text = full_text[:i]
+                    
+                new_clip = TextClip(new_text, 
+                                    fontsize=settings['how_well_font_size'], 
+                                    font=settings['font_general_text'], 
+                                    color=settings['how_well_colour'],
+                                    size=settings['screen_size'], 
+                                    kerning=settings['how_well_kerning'], 
+                                    interline=settings['how_well_interline'])
+                new_clip = new_clip.set_duration(char_duration)
+                clips.append(new_clip)
+                
+                # black boarder
+                new_clip = TextClip(new_text, 
+                                    fontsize=settings['how_well_font_size'], 
+                                    font=settings['font_general_text'], 
+                                    color=settings['text_border_colour'],
+                                    size=settings['screen_size'], 
+                                    kerning=settings['how_well_kerning'], 
+                                    interline=settings['how_well_interline'], 
+                                    stroke_width=settings['text_border_width'], 
+                                    stroke_color=settings['text_border_colour'])
+                new_clip = new_clip.set_duration(char_duration)
+                border_clips.append(new_clip)
+            
+            
+        # finally add a new clip which just lasts the entire rest of the intro
+        new_clip = TextClip(full_text, 
+                            fontsize=settings['how_well_font_size'], 
+                            font=settings['font_general_text'], 
+                            color=settings['how_well_colour'],
+                            size=settings['screen_size'], 
+                            kerning=settings['how_well_kerning'], 
+                            interline=settings['how_well_interline'])
+        new_clip = new_clip.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration))
+        clips.append(new_clip)
+        
+        # black boarder
+        new_clip_border = TextClip(full_text, 
+                            fontsize=settings['how_well_font_size'], 
+                            font=settings['font_general_text'], 
+                            color=settings['text_border_colour'],
+                            size=settings['screen_size'], 
+                            kerning=settings['how_well_kerning'], 
+                            interline=settings['how_well_interline'], 
+                            stroke_width=settings['text_border_width'], 
+                            stroke_color=settings['text_border_colour'])
+        new_clip_border = new_clip_border.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration))
+        border_clips.append(new_clip_border)
+            
+        # set the duration of the last clips to last (and one clip length)
+        intro_how_well_text = concatenate_videoclips(clips, method="chain")    
+        intro_how_well_text_black_border = concatenate_videoclips(border_clips, method="chain")
+        
+        #intro_how_well_text_combined = ( CompositeVideoClip([intro_how_well_text_black_border, intro_how_well_text], size=settings['screen_size'])
+                                        #.set_position(settings['how_well_position'])
+                                        #.crossfadeout(1) )
+        intro_how_well_text_black_border = intro_how_well_text_black_border.set_position(settings['how_well_position']).crossfadeout(1)
+        intro_how_well_text = intro_how_well_text.set_position(settings['how_well_position']).crossfadeout(1)
+        
+        # to keep things alligned for debug image if testing
+        if settings['testing']:
+            #intro_how_well_text_combined = intro_how_well_text_combined.set_start(audio_quick.duration + audio_how_well.duration)
+            intro_how_well_text_black_border = intro_how_well_text_black_border.set_start(audio_quick.duration + audio_how_well.duration)
+            intro_how_well_text = intro_how_well_text.set_start(audio_quick.duration + audio_how_well.duration)
+        else:
+            #intro_how_well_text_combined = intro_how_well_text_combined.set_start(audio_quick.duration)
+            intro_how_well_text_black_border = intro_how_well_text_black_border.set_start(audio_quick.duration)
+            intro_how_well_text = intro_how_well_text.set_start(audio_quick.duration)
+            
+        saved_parts['How Well'][0][0] = intro_how_well_text_black_border
+        saved_parts['How Well'][0][1] = intro_how_well_text
+        saved_parts['How Well'][1] = False
+        
+        how_well_end_time = time.time()
+        print(f"Text Time - How Well: {round(how_well_end_time - how_well_start_time, 2)}")
+    
+    
+    
+    
+    # Topic TITLE text
+    if saved_parts['Topic'][0][0] is None or saved_parts['Topic'][1] == True:
+        topic_start_time = time.time()    
+        normal_clips = []
+        border_clips = []
+        
+        
+        
+        if settings['topic_intro_one_word_per_line']:
+            text_lines = Helpers.make_one_word_per_line(settings['full_topic'])
+            
+            
+            for i in range(0, len(text_lines)):
+                normal_clip = ( TextClip(text_lines[i], 
+                                    fontsize=settings['topic_intro_font_size'], 
+                                    font=settings['font_topic'], 
+                                    color=settings['topic_intro_colour'], 
+                                    size=settings['screen_size'], 
+                                    kerning=settings['topic_intro_kerning'], 
+                                    interline=settings['topic_intro_interline'],))
+                
+                border_clip = ( TextClip(text_lines[i], 
+                                        fontsize=settings['topic_intro_font_size'], 
+                                        font=settings['font_topic'], 
+                                        color=settings['text_border_colour'], 
+                                        size=settings['screen_size'], 
+                                        kerning=settings['topic_intro_kerning'], 
+                                        interline=settings['topic_intro_interline'], 
+                                        stroke_width=settings['text_border_width'], 
+                                        stroke_color=settings['text_border_colour']))
+                
+                # check for last and make it last the rest of the time needed
+                if i == len(text_lines)-1:
+                    border_clip = border_clip.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration + ((len(text_lines)-1) * (audio_topic.duration/len(text_lines)))))
+                    normal_clip = normal_clip.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration + ((len(text_lines)-1) * (audio_topic.duration/len(text_lines)))))
+                else:
+                    border_clip = border_clip.set_duration(audio_topic.duration/len(text_lines))
+                    normal_clip = normal_clip.set_duration(audio_topic.duration/len(text_lines))
+                
+                normal_clips.append(normal_clip)
+                border_clips.append(border_clip)
+                
+        else: # not doing one word per line
+            # split topic into words
+            words = settings['full_topic'].split(' ')
+            temp_text = ''
+            for i in range(0, len(words)):
+                if i == len(words)-1:
+                    temp_text += words[i]
+                else: # if not last add a space
+                    temp_text += words[i] + ' '
+                    
+                normal_clip = ( TextClip(temp_text, 
+                                fontsize=settings['topic_intro_font_size'], 
+                                font=settings['font_topic'], 
+                                color=settings['topic_intro_colour'], 
+                                size=settings['screen_size'], 
+                                kerning=settings['topic_intro_kerning'], 
+                                interline=settings['topic_intro_interline'],))
+            
+                border_clip = ( TextClip(temp_text, 
+                                    fontsize=settings['topic_intro_font_size'], 
+                                    font=settings['font_topic'], 
+                                    color=settings['text_border_colour'], 
+                                    size=settings['screen_size'], 
+                                    kerning=settings['topic_intro_kerning'], 
+                                    interline=settings['topic_intro_interline'], 
+                                    stroke_width=settings['text_border_width'], 
+                                    stroke_color=settings['text_border_colour']))
+                
+                if i == len(words)-1: # then its the last letter so it needs to last the rest
+                    border_clip = border_clip.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration + ((len(words)-1) * (audio_topic.duration/len(words)))))
+                    normal_clip = normal_clip.set_duration(intro_audio_duration_total - (audio_quick.duration + audio_how_well.duration + ((len(words)-1) * (audio_topic.duration/len(words)))))
+                else: #else normal
+                    border_clip = border_clip.set_duration(audio_topic.duration/len(words))
+                    normal_clip = normal_clip.set_duration(audio_topic.duration/len(words))
+            
+                normal_clips.append(normal_clip)
+                border_clips.append(border_clip)
+                
+            
+            
+        # add the last one which lasts
+        
+        # join then all
+        intro_topic_text = concatenate_videoclips(normal_clips, method="chain")
+        intro_topic_text_border = concatenate_videoclips(border_clips, method="chain")
+        
+        #intro_topic_text_combined = ( CompositeVideoClip([intro_topic_text_border, intro_topic_text], size=settings['screen_size'])
+                                        #.set_start(audio_quick.duration + audio_how_well.duration)
+                                        #.set_position(settings['topic_intro_position'])
+                                        #.crossfadeout(1) )
+                                        
+        intro_topic_text_border = (intro_topic_text_border
+                                        .set_start(audio_quick.duration + audio_how_well.duration)
+                                        .set_position(settings['topic_intro_position'])
+                                        .crossfadeout(1) )
+        intro_topic_text = (intro_topic_text
+                                        .set_start(audio_quick.duration + audio_how_well.duration)
+                                        .set_position(settings['topic_intro_position'])
+                                        .crossfadeout(1) )
+        
+        saved_parts['Topic'][0][0] = intro_topic_text_border
+        saved_parts['Topic'][0][1] = intro_topic_text
+        saved_parts['Topic'][1] = False
+        
+        topic_end_time = time.time()
+        print(f"Text Time - Topic: {round(topic_end_time - topic_start_time, 2)}")
+    
+    
+    
+    # 3 Questions Text
+    if saved_parts['3 Questions'][0][0] is None or saved_parts['3 Questions'][1] == True:
+        three_questions_start_time = time.time()
+        three_questions_audio_start = audio_quick.duration + audio_how_well.duration + audio_topic.duration + audio_prove.duration
+        intro_three_questions_text = ( TextClip(settings['three_questions_raw_text'], 
+                                                fontsize=settings['three_questions_font_size'], 
+                                                font=settings['font_general_text'], 
+                                                color=settings['three_questions_colour'], 
+                                                size=settings['screen_size'], 
+                                                kerning=settings['three_questions_kerning']) )
+            
+        intro_three_questions_text_border = ( TextClip(settings['three_questions_raw_text'], 
+                                                        fontsize=settings['three_questions_font_size'], 
+                                                        font=settings['font_general_text'], 
+                                                        color=settings['text_border_colour'], 
+                                                        size=settings['screen_size'], 
+                                                        kerning=settings['three_questions_kerning'], 
+                                                        stroke_width=settings['text_border_width'], 
+                                                        stroke_color=settings['text_border_colour']) )
+        
+        three_questions_duration = intro_audio_duration_total - three_questions_audio_start
+        #intro_three_questions_text_combined = ( CompositeVideoClip([intro_three_questions_text_border, intro_three_questions_text], size=settings['screen_size'])
+                                            #.set_duration(three_questions_duration)
+                                            #.set_start(three_questions_audio_start)
+                                            #.crossfadein(settings['three_questions_anim_in_time'])
+                                            #.crossfadeout(settings['three_questions_anim_out_time'])
+                                            #)
+            
+        # returns the new x position of the text and keeps the y the same
+       #intro_three_questions_text_combined = intro_three_questions_text_combined.set_position(lambda t: (
+                                                #Animations.slide_in_slide_out(t, 
+                                                                            #audio_3_questions.duration, 
+                                                                            #settings['three_questions_anim_out_time'],
+                                                                            #three_questions_duration, 
+                                                                            #settings['three_questions_position'][0], 
+                                                                            #settings['three_questions_anim_overshoot'], 
+                                                                            #settings['three_questions_anim_right_move']),
+                                                                            #settings['three_questions_position'][1])) 
+        
+        intro_three_questions_text_border = (intro_three_questions_text_border
+                                                .set_duration(three_questions_duration)
+                                                .set_start(three_questions_audio_start)
+                                                .crossfadein(settings['three_questions_anim_in_time'])
+                                                .crossfadeout(settings['three_questions_anim_out_time'])
+                                                .set_position(lambda t: (Animations.slide_in_slide_out(t, 
+                                                                            audio_3_questions.duration, 
+                                                                            settings['three_questions_anim_out_time'],
+                                                                            three_questions_duration, 
+                                                                            settings['three_questions_position'][0], 
+                                                                            settings['three_questions_anim_overshoot'], 
+                                                                            settings['three_questions_anim_right_move']),
+                                                                            settings['three_questions_position'][1])) 
+                                                )
+        
+        intro_three_questions_text = (intro_three_questions_text
+                                                .set_duration(three_questions_duration)
+                                                .set_start(three_questions_audio_start)
+                                                .crossfadein(settings['three_questions_anim_in_time'])
+                                                .crossfadeout(settings['three_questions_anim_out_time'])
+                                                .set_position(lambda t: (Animations.slide_in_slide_out(t, 
+                                                                            audio_3_questions.duration, 
+                                                                            settings['three_questions_anim_out_time'],
+                                                                            three_questions_duration, 
+                                                                            settings['three_questions_position'][0], 
+                                                                            settings['three_questions_anim_overshoot'], 
+                                                                            settings['three_questions_anim_right_move']),
+                                                                            settings['three_questions_position'][1])) 
+                                                )
+        
+        saved_parts['3 Questions'][0][0] = intro_three_questions_text_border
+        saved_parts['3 Questions'][0][1] = intro_three_questions_text
+        saved_parts['3 Questions'][1] = False
+        
+        three_questions_end_time = time.time()
+        print(f"Text Time - 3 Questions: {round(three_questions_end_time - three_questions_start_time, 2)}")
+    
+    
+    
+    # 5 seconds text
+    if saved_parts['Seconds'][0][0] is None or saved_parts['Seconds'][1] == True:
+        seconds_start_time = time.time()
+        seconds_audio_start = audio_quick.duration + audio_how_well.duration + audio_topic.duration + audio_prove.duration + audio_3_questions.duration
+        intro_seconds_text = ( TextClip(settings['seconds_raw_text'], 
+                                        fontsize=settings['seconds_font_size'], 
+                                        font=settings['font_general_text'], 
+                                        color=settings['seconds_colour'], 
+                                        size=settings['screen_size'], 
+                                        kerning=settings['seconds_kerning']) )
+            
+        intro_seconds_text_border = ( TextClip(settings['seconds_raw_text'], 
+                                                        fontsize=settings['seconds_font_size'], 
+                                                        font=settings['font_general_text'], 
+                                                        color=settings['text_border_colour'], 
+                                                        size=settings['screen_size'], 
+                                                        kerning=settings['seconds_kerning'], 
+                                                        stroke_width=settings['text_border_width'], 
+                                                        stroke_color=settings['text_border_colour']) )
+                        
+        intro_seconds_duration = intro_audio_duration_total - seconds_audio_start
+        '''
+        intro_seconds_text_combined = ( CompositeVideoClip([intro_seconds_text_border, intro_seconds_text], size=settings['screen_size'])
+                                        .set_start(seconds_audio_start)
+                                        .set_duration(intro_seconds_duration)
+                                        .crossfadein(settings['seconds_anim_in_time'])
+                                        .crossfadeout(settings['seconds_anim_out_time'])
+                                        )
+        
+        
+        # returns the new x position of the text and keeps the y the same
+        intro_seconds_text_combined = intro_seconds_text_combined.set_position(lambda t: (
+                                                Animations.slide_in_slide_out(t, 
+                                                                            audio_x_seconds.duration, 
+                                                                            settings['seconds_anim_out_time'],
+                                                                            intro_seconds_duration, 
+                                                                            settings['seconds_position'][0], 
+                                                                            settings['seconds_anim_overshoot'], 
+                                                                            settings['seconds_anim_right_move']),
+                                                settings['seconds_position'][1])) 
+        '''
+        
+        intro_seconds_text_border = (intro_seconds_text_border
+                                        .set_start(seconds_audio_start)
+                                        .set_duration(intro_seconds_duration)
+                                        .crossfadein(settings['seconds_anim_in_time'])
+                                        .crossfadeout(settings['seconds_anim_out_time'])
+                                        .set_position(lambda t: (
+                                                Animations.slide_in_slide_out(t, 
+                                                                            audio_x_seconds.duration, 
+                                                                            settings['seconds_anim_out_time'],
+                                                                            intro_seconds_duration, 
+                                                                            settings['seconds_position'][0], 
+                                                                            settings['seconds_anim_overshoot'], 
+                                                                            settings['seconds_anim_right_move']),
+                                                settings['seconds_position'][1])) )
+        
+        intro_seconds_text = (intro_seconds_text
+                                        .set_start(seconds_audio_start)
+                                        .set_duration(intro_seconds_duration)
+                                        .crossfadein(settings['seconds_anim_in_time'])
+                                        .crossfadeout(settings['seconds_anim_out_time'])
+                                        .set_position(lambda t: (
+                                                Animations.slide_in_slide_out(t, 
+                                                                            audio_x_seconds.duration, 
+                                                                            settings['seconds_anim_out_time'],
+                                                                            intro_seconds_duration, 
+                                                                            settings['seconds_position'][0], 
+                                                                            settings['seconds_anim_overshoot'], 
+                                                                            settings['seconds_anim_right_move']),
+                                                settings['seconds_position'][1])) )
+        
+        
+        saved_parts['Seconds'][0][0] = intro_seconds_text_border
+        saved_parts['Seconds'][0][1] = intro_seconds_text
+        saved_parts['Seconds'][1] = False
+        
+        seconds_end_time = time.time()
+        print(f"Text Time - 5 Seconds: {round(seconds_end_time - seconds_start_time, 2)}")
+        
+    
+
+
+    # background image
+    if saved_parts['Background'][0] is None or saved_parts['Background'][1] == True:
+        background_start_time = time.time()
+        background_image = ( ImageClip(settings['background_image_path'])
+                            .set_duration(intro_audio_duration_total) # how many seconds the clip lasts for 
+                            .set_position(settings['background_position'])) 
+        
+        if settings['use_background_width']:
+            background_image = background_image.resize(width=settings['background_size'])
+        else: # use height instead
+            background_image = background_image.resize(height=settings['background_size'])
+            
+        saved_parts['Background'][0] = background_image
+        saved_parts['Background'][1] = False
+        
+        background_end_time = time.time()
+        print(f"Background Time: {round(background_end_time - background_start_time, 2)}")
+    
+    
+    # this will overlay the text on the background
+    intro_video_combined = CompositeVideoClip([saved_parts['Background'][0], 
+                                               saved_parts['Quick'][0][0], saved_parts['Quick'][0][1],
+                                               saved_parts['How Well'][0][0], saved_parts['How Well'][0][1],
+                                               saved_parts['Topic'][0][0], saved_parts['Topic'][0][1],
+                                               saved_parts['3 Questions'][0][0], saved_parts['3 Questions'][0][1],
+                                               saved_parts['Seconds'][0][0], saved_parts['Seconds'][0][1]], 
+                                                size=settings['screen_size'])
+    
+    intro_video_audio_combined = intro_video_combined.set_audio(intro_audio)
+    
+    
+    Helpers.show_frame(intro_video_combined, intro_audio_duration_total - 1, 0)
+    
+    intro_end_time = time.time()
+    
+
+    # short video for testing
+    if render_intro:
+        #intro_video_audio_combined = intro_video_audio_combined.subclip( 
+                                        #intro_audio.duration - 1.25,
+                                        #intro_audio.duration)
+        
+        print("Intro Starting Render, Edit Took: ", round(intro_end_time - intro_start_time, 2), " seconds")
+        
+        start_time = time.time()
+        intro_video_audio_combined.write_videofile(
+                                filename=f"{quiz_path}Finished/intro.mp4", 
+                                fps=settings['fps'],  # Frame rate
+                                codec=video_codec,  # Video codec (h264) or 'mpeg4' could also work
+                                audio=True, # Do not include audio
+                                audio_codec="aac",  # Audio codec
+                                audio_bitrate="192k",  # Audio bitrate
+                                preset=video_preset,  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
+                                threads=8,  # Number of threads for processing (None for auto)
+                                ffmpeg_params=["-q:v", "75"],  # Additional FFmpeg parameters: CRF for quality lossless => ['-qp', '0']
+                                logger="bar"
+                            )
+        end_time = time.time()
+        total_time = round(end_time - start_time)
+        total_minutes = math.floor(total_time / 60)
+        total_seconds = total_time - (total_minutes * 60)
+        print(f"Intro Render took: {total_minutes}:{total_seconds} seconds")
+    
+    
+    #return intro_video_audio_combined
+    return (intro_video_audio_combined, intro_audio_duration_total - 1, saved_parts)
+
+
+# main make intro function
+def make_questions(settings, saved_parts, question_num, render_question):
     
     q_start_time = time.time()
     
@@ -532,7 +1076,7 @@ def make_questions(settings, saved_parts, question_num):
     
     # Title Text
     # intro animation
-    if saved_parts['Title'][0] is None or saved_parts['Title'][1] == True:
+    if saved_parts['Title'][0][0] is None or saved_parts['Title'][1] == True:
         title_start_time = time.time()
         title_text = ( TextClip(f"{settings['question_raw_text']} {question_num}", 
                                 fontsize=settings['question_title_font_size'], 
@@ -564,13 +1108,25 @@ def make_questions(settings, saved_parts, question_num):
             lambda t: Animations.pop_in_pop_out_size(t, audio_title.duration, 1, audio_duration_total, width, height, settings['question_title_pop_in_overshoot']))
         title_text_border = title_text_border.set_position(
             lambda t: Animations.pop_in_pop_out_position(t, audio_title.duration, 1, audio_duration_total, width, height, settings['screen_size'], settings['question_title_position'][0], settings['question_title_position'][1], settings['question_title_pop_in_overshoot']))
-            
+        '''    
         title_text_combined = ( CompositeVideoClip([title_text_border, title_text], size=settings['screen_size'])
                                 .set_start(0)
                                 .set_duration(audio_duration_total)
                                 .crossfadeout(1) )
+        '''
         
-        saved_parts['Title'][0] = title_text_combined
+        title_text_border = (title_text_border
+                                .set_start(0)
+                                .set_duration(audio_duration_total)
+                                .crossfadeout(1) )
+        
+        title_text = (title_text
+                                .set_start(0)
+                                .set_duration(audio_duration_total)
+                                .crossfadeout(1) )
+        
+        saved_parts['Title'][0][0] = title_text_border
+        saved_parts['Title'][0][1] = title_text
         saved_parts['Title'][1] = False
         
         title_end_time = time.time()
@@ -580,7 +1136,7 @@ def make_questions(settings, saved_parts, question_num):
     
     
     # question text
-    if saved_parts['Question'][0] is None or saved_parts['Question'][1] == True:
+    if saved_parts['Question'][0][0] is None or saved_parts['Question'][1] == True:
         question_text_start_time = time.time()
         
         if question_num == 1:
@@ -680,18 +1236,36 @@ def make_questions(settings, saved_parts, question_num):
         
         question_text_border = concatenate_videoclips(border_clips, method="chain")
                                 
-        
+        '''
         question_text_combined = ( CompositeVideoClip([question_text_border, question_text], size=settings['screen_size'])
                                     .set_position(question_position)
                                     .crossfadeout(1) )
+        '''
+        question_text_border = (question_text_border
+                                .set_position(question_position)
+                                .crossfadeout(1) )
+        
+        question_text = (question_text
+                                .set_position(question_position)
+                                .crossfadeout(1) )
         
         # so if im testing everything still lines up (otherwise question comes in right, but goes out too early)
         if settings['testing']:
-            question_text_combined = question_text_combined.set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration)
+            #question_text_combined = question_text_combined.set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration)
+            question_text_border = question_text_border.set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration)
+            question_text = question_text.set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration)
         else:
-            question_text_combined = question_text_combined.set_start(audio_title.duration + settings['title_to_question_silence'])
+            #question_text_combined = question_text_combined.set_start(audio_title.duration + settings['title_to_question_silence'])
+            question_text_border = question_text_border.set_start(audio_title.duration + settings['title_to_question_silence'])
+            question_text = question_text.set_start(audio_title.duration + settings['title_to_question_silence'])
         
-        saved_parts['Question'][0] = question_text_combined
+        
+        question_text_border = (question_text_border
+                                .set_position(question_position)
+                                .crossfadeout(1) )
+        
+        saved_parts['Question'][0][0] = question_text_border
+        saved_parts['Question'][0][1] = question_text
         saved_parts['Question'][1] = False
         
         question_text_end_time = time.time()
@@ -703,7 +1277,8 @@ def make_questions(settings, saved_parts, question_num):
         timer_start_time = time.time()
         timer = ( VideoFileClip(settings['timer_path'], has_mask=True)
                 .set_position(timer_position)
-                .set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration))
+                .set_start(audio_title.duration + settings['title_to_question_silence'] + audio_question.duration)
+                .resize(width=settings['timer_size']))
         
         saved_parts['Timer'][0] = timer
         saved_parts['Timer'][1] = False
@@ -715,7 +1290,7 @@ def make_questions(settings, saved_parts, question_num):
     
     
     # answer text
-    if saved_parts['Answer'][0] is None or saved_parts['Answer'][1] == True:
+    if saved_parts['Answer'][0][0] is None or saved_parts['Answer'][1] == True:
         answer_start_time = time.time()
         
         answer_audio_start = audio_title.duration + settings['title_to_question_silence'] + audio_question.duration + settings['question_silence_duration']
@@ -756,7 +1331,7 @@ def make_questions(settings, saved_parts, question_num):
                                         stroke_width=settings['text_border_width'], 
                                         stroke_color=settings['text_border_colour']) )
                         
-        
+        '''
         answer_text_combined = ( CompositeVideoClip([answer_text_border, answer_text], size=settings['screen_size'])
                                 .set_start(answer_audio_start) 
                                 .set_duration(audio_duration_total - answer_audio_start)
@@ -772,9 +1347,44 @@ def make_questions(settings, saved_parts, question_num):
                                                                 settings['answer_anim_overshoot'], 
                                                                 settings['answer_anim_right_move']),
                                                                 answer_position[1]) )
+        '''
+        
+        answer_text_border = (answer_text_border
+                                .set_start(answer_audio_start) 
+                                .set_duration(audio_duration_total - answer_audio_start)
+                                .crossfadein(0.5)
+                                .crossfadeout(settings['answer_anim_out_time'])
+                                .set_position(lambda t: (Animations.slide_in_slide_out(  
+                                                                t, 
+                                                                -1, 
+                                                                settings['answer_anim_out_time'],
+                                                                audio_duration_total - answer_audio_start, 
+                                                                answer_position[0], 
+                                                                settings['answer_anim_overshoot'], 
+                                                                settings['answer_anim_right_move']),
+                                                                answer_position[1]))
+        )
+        
+        answer_text = (answer_text
+                                .set_start(answer_audio_start) 
+                                .set_duration(audio_duration_total - answer_audio_start)
+                                .crossfadein(0.5)
+                                .crossfadeout(settings['answer_anim_out_time'])
+                                .set_position(lambda t: (Animations.slide_in_slide_out(  
+                                                                t, 
+                                                                -1, 
+                                                                settings['answer_anim_out_time'],
+                                                                audio_duration_total - answer_audio_start, 
+                                                                answer_position[0], 
+                                                                settings['answer_anim_overshoot'], 
+                                                                settings['answer_anim_right_move']),
+                                                                answer_position[1]))
+        )
+                     
                                                                                                 
         
-        saved_parts['Answer'][0] = answer_text_combined
+        saved_parts['Answer'][0][0] = answer_text_border
+        saved_parts['Answer'][0][1] = answer_text
         saved_parts['Answer'][1] = False
         
         answer_end_time = time.time()
@@ -826,12 +1436,13 @@ def make_questions(settings, saved_parts, question_num):
                             .set_position(settings['question_1_image_answer_position'])
                             .set_start(image_start_time)
                             .set_duration(audio_duration_total - image_start_time)
-                            .crossfadein(min(1, audio_answer.duration))
+                            .crossfadein(min(1, audio_answer.duration)*0.3)
                             .crossfadeout(1)
                             )
                 
                 # combine and answer and helper images into the clip
-                answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                #answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                answer_image = [answer_image, helper_image]
                 
             
             # just use the answer image not helper
@@ -891,12 +1502,13 @@ def make_questions(settings, saved_parts, question_num):
                             .set_position(settings['question_2_image_answer_position'])
                             .set_start(image_start_time)
                             .set_duration(audio_duration_total - image_start_time)
-                            .crossfadein(min(1, audio_answer.duration))
+                            .crossfadein(min(1, audio_answer.duration)*0.3)
                             .crossfadeout(1)
                             )
                 
                 # combine and answer and helper images into the clip
-                answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                #answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                answer_image = [answer_image, helper_image]
                 
             
             # just use the answer image not helper
@@ -956,12 +1568,13 @@ def make_questions(settings, saved_parts, question_num):
                             .set_position(settings['question_3_image_answer_position'])
                             .set_start(image_start_time)
                             .set_duration(audio_duration_total - image_start_time)
-                            .crossfadein(min(1, audio_answer.duration))
+                            .crossfadein(min(1, audio_answer.duration)*0.3)
                             .crossfadeout(1)
                             )
                 
                 # combine and answer and helper images into the clip
-                answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                #answer_image = CompositeVideoClip([answer_image, helper_image], size=settings['screen_size'])
+                answer_image = [answer_image, helper_image]
                 
             
             # just use the answer image not helper
@@ -1009,13 +1622,26 @@ def make_questions(settings, saved_parts, question_num):
         print(f"Background Time: {round(background_end_time - background_start_time, 2)}")
     
     
-    # this will overlay the text on the background
-    video_combined = CompositeVideoClip([saved_parts['Background'][0], 
-                                            saved_parts['Answer Image'][0],
-                                            saved_parts['Title'][0],
-                                            saved_parts['Question'][0],
+    # if my answer image is joined with the helper
+    print(type(saved_parts['Answer Image'][0]))
+    if type(saved_parts['Answer Image'][0]) == list:
+        print("Using list path")
+        
+        video_combined = CompositeVideoClip([saved_parts['Background'][0], 
+                                            saved_parts['Answer Image'][0][0], saved_parts['Answer Image'][0][1],
+                                            saved_parts['Title'][0][0], saved_parts['Title'][0][1],
+                                            saved_parts['Question'][0][0], saved_parts['Question'][0][1],
                                             saved_parts['Timer'][0],
-                                            saved_parts['Answer'][0]], 
+                                            saved_parts['Answer'][0][0], saved_parts['Answer'][0][1]], 
+                                                size=settings['screen_size'])
+    else: # just a single answer image
+        print("Using other path")
+        video_combined = CompositeVideoClip([saved_parts['Background'][0], 
+                                            saved_parts['Answer Image'][0],
+                                            saved_parts['Title'][0][0], saved_parts['Title'][0][1],
+                                            saved_parts['Question'][0][0], saved_parts['Question'][0][1],
+                                            saved_parts['Timer'][0],
+                                            saved_parts['Answer'][0][0], saved_parts['Answer'][0][1]], 
                                                 size=settings['screen_size'])
     video_audio_combined = video_combined.set_audio(audio_combined)
     
@@ -1033,14 +1659,6 @@ def make_questions(settings, saved_parts, question_num):
     q_end_time = time.time()
     
     
-    if question_num == 1 and settings['render_q1']:
-        render_question = True
-    elif question_num == 2 and settings['render_q2']:
-        render_question = True
-    elif question_num == 3 and settings['render_q3']:
-        render_question = True
-    else:
-        render_question = False
         
     # short video for testing
     if render_question:
@@ -1054,13 +1672,13 @@ def make_questions(settings, saved_parts, question_num):
         video_audio_combined.write_videofile(
                                 filename=f"{quiz_path}Finished/q{question_num}.mp4", 
                                 fps=settings['fps'],  # Frame rate
-                                codec="libx264",  # Video codec (h264) or 'mpeg4' could also work
+                                codec=video_codec,  # Video codec (h264) or 'mpeg4' could also work. default: libx264, Encoders: h264_videotoolbox
                                 audio=True, # Do not include audio
                                 audio_codec="aac",  # Audio codec
                                 audio_bitrate="192k",  # Audio bitrate
-                                preset="medium",  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
+                                preset=video_preset,  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
                                 threads=8,  # Number of threads for processing (None for auto)
-                                ffmpeg_params=[],  # Additional FFmpeg parameters: CRF for quality
+                                ffmpeg_params=["-q:v", "75"],  # Additional FFmpeg parameters: CRF for quality
                                 logger="bar"
                             )
         end_time = time.time()
@@ -1076,7 +1694,7 @@ def make_questions(settings, saved_parts, question_num):
 
      
 # main make outro function
-def make_outro(settings, saved_parts):
+def make_outro(settings, saved_parts, render_outro):
     
     outro_start_time = time.time()
     
@@ -1121,8 +1739,8 @@ def make_outro(settings, saved_parts):
     
     
     # Thanks for playing Text
-    # outro animation
-    if saved_parts['Thanks'][0] is None or saved_parts['Thanks'][1] == True:
+    
+    if saved_parts['Thanks'][0][0] is None or saved_parts['Thanks'][1] == True:
         thanks_start_time = time.time()
         thanks_text = ( TextClip(settings['thanks_raw_text'], 
                                     fontsize=settings['thanks_font_size'], 
@@ -1133,10 +1751,11 @@ def make_outro(settings, saved_parts):
                                     interline=settings['thanks_interline']) )
         
         width, height = thanks_text.size
-        thanks_text = thanks_text.resize(
-            lambda t: Animations.pop_in_pop_out_size(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['thanks_pop_in_overshoot']))
         thanks_text = thanks_text.set_position(
             lambda t: Animations.pop_in_pop_out_position(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['screen_size'], settings['thanks_text_position'][0], settings['thanks_text_position'][1], settings['thanks_pop_in_overshoot']))
+        thanks_text = thanks_text.resize(
+            lambda t: Animations.pop_in_pop_out_size(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['thanks_pop_in_overshoot']))
+        
 
         thanks_text_border = ( TextClip(settings['thanks_raw_text'], 
                                         fontsize=settings['thanks_font_size'], 
@@ -1149,15 +1768,22 @@ def make_outro(settings, saved_parts):
                                         stroke_color=settings['text_border_colour']) )
         
         width, height = thanks_text_border.size
-        thanks_text_border = thanks_text_border.resize(
-            lambda t: Animations.pop_in_pop_out_size(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['thanks_pop_in_overshoot']))
         thanks_text_border = thanks_text_border.set_position(
             lambda t: Animations.pop_in_pop_out_position(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['screen_size'], settings['thanks_text_position'][0], settings['thanks_text_position'][1], settings['thanks_pop_in_overshoot']))
+        thanks_text_border = thanks_text_border.resize(
+            lambda t: Animations.pop_in_pop_out_size(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['thanks_pop_in_overshoot']))
         
+        
+        '''
         thanks_text_combined = ( CompositeVideoClip([thanks_text_border, thanks_text], size=settings['screen_size'])
                                     .set_duration(outro_audio_duration_total) )
+        '''
         
-        saved_parts['Thanks'][0] = thanks_text_combined
+        thanks_text_border = thanks_text_border.set_duration(outro_audio_duration_total)
+        thanks_text = thanks_text.set_duration(outro_audio_duration_total)
+        
+        saved_parts['Thanks'][0][0] = thanks_text_border
+        saved_parts['Thanks'][0][1] = thanks_text
         saved_parts['Thanks'][1] = False
         
         thanks_end_time = time.time()
@@ -1166,7 +1792,7 @@ def make_outro(settings, saved_parts):
     
     
     # Topic TITLE text
-    if saved_parts['Topic'][0] is None or saved_parts['Topic'][1] == True:
+    if saved_parts['Topic'][0][0] is None or saved_parts['Topic'][1] == True:
         topic_start_time = time.time()    
         normal_clips = []
         border_clips = []
@@ -1246,12 +1872,22 @@ def make_outro(settings, saved_parts):
         # join then all
         outro_topic_text = concatenate_videoclips(normal_clips, method="chain")
         outro_topic_text_border = concatenate_videoclips(border_clips, method="chain")
-        
+        '''
         outro_topic_text_combined = ( CompositeVideoClip([outro_topic_text_border, outro_topic_text], size=settings['screen_size'])
                                         .set_start(audio_thanks.duration)
                                         .set_position(settings['topic_outro_position']))
+        '''
         
-        saved_parts['Topic'][0] = outro_topic_text_combined
+        outro_topic_text_border = (outro_topic_text_border
+                                        .set_start(audio_thanks.duration)
+                                        .set_position(settings['topic_outro_position']))
+        
+        outro_topic_text = (outro_topic_text
+                                        .set_start(audio_thanks.duration)
+                                        .set_position(settings['topic_outro_position']))
+        
+        saved_parts['Topic'][0][0] = outro_topic_text_border
+        saved_parts['Topic'][0][1] = outro_topic_text
         saved_parts['Topic'][1] = False
         
         topic_end_time = time.time()
@@ -1261,7 +1897,7 @@ def make_outro(settings, saved_parts):
     
     
     # Subscribe text
-    if saved_parts['Subscribe'][0] is None or saved_parts['Subscribe'][1] == True:
+    if saved_parts['Subscribe'][0][0] is None or saved_parts['Subscribe'][1] == True:
         subscribe_start_time = time.time()
         subscribe_audio_start = audio_thanks.duration + audio_topic.duration + audio_comment.duration  + audio_enjoy.duration
         subscribe_text = ( TextClip(settings['subscribe_raw_text'], 
@@ -1279,14 +1915,28 @@ def make_outro(settings, saved_parts):
                                             kerning=settings['subscribe_kerning'], 
                                             stroke_width=settings['text_border_width'], 
                                             stroke_color=settings['text_border_colour']) )
-
+        '''
         subscribe_text_combined = ( CompositeVideoClip([subscribe_text_border, subscribe_text], size=settings['screen_size'])
                                     .set_start(subscribe_audio_start)
                                     .set_duration(outro_audio_duration_total - subscribe_audio_start)
                                     .crossfadein(1)
                                     .set_position(settings['subscribe_text_position']) )
+        '''
         
-        saved_parts['Subscribe'][0] = subscribe_text_combined
+        subscribe_text_border = (subscribe_text_border
+                                    .set_start(subscribe_audio_start)
+                                    .set_duration(outro_audio_duration_total - subscribe_audio_start)
+                                    .crossfadein(1)
+                                    .set_position(settings['subscribe_text_position']) )
+        
+        subscribe_text = (subscribe_text
+                                    .set_start(subscribe_audio_start)
+                                    .set_duration(outro_audio_duration_total - subscribe_audio_start)
+                                    .crossfadein(1)
+                                    .set_position(settings['subscribe_text_position']) )
+        
+        saved_parts['Subscribe'][0][0] = subscribe_text_border
+        saved_parts['Subscribe'][0][1] = subscribe_text
         saved_parts['Subscribe'][1] = False
         
         subscribe_end_time = time.time()
@@ -1311,7 +1961,7 @@ def make_outro(settings, saved_parts):
     
     
     # Comment Text
-    if saved_parts['Comment'][0] is None or saved_parts['Comment'][1] == True:
+    if saved_parts['Comment'][0][0] is None or saved_parts['Comment'][1] == True:
         comment_start_time = time.time()
         comment_audio_start = audio_thanks.duration + audio_topic.duration + audio_enjoy.duration
         comment_text = ( TextClip(settings['comment_raw_text'], 
@@ -1347,8 +1997,37 @@ def make_outro(settings, saved_parts):
                                                                 settings['comment_anim_overshoot'], 
                                                                 settings['comment_anim_right_move']),
                                                                 settings['comment_text_position'][1]) ) 
+        comment_text_border = (comment_text_border
+                                .set_start(comment_audio_start)
+                                .set_duration(outro_audio_duration_total - comment_audio_start)
+                                .crossfadein(1)
+                                .set_position(lambda t: (Animations.slide_in_slide_out(t, 
+                                                            1, 
+                                                            -1,
+                                                            outro_audio_duration_total - comment_audio_start, 
+                                                            settings['comment_text_position'][0], 
+                                                            settings['comment_anim_overshoot'], 
+                                                            settings['comment_anim_right_move']),
+                                                            settings['comment_text_position'][1]) ) 
+                                    )
         
-        saved_parts['Comment'][0] = comment_text_combined
+        comment_text = (comment_text
+                        .set_start(comment_audio_start)
+                        .set_duration(outro_audio_duration_total - comment_audio_start)
+                        .crossfadein(1)
+                        .set_position(lambda t: (Animations.slide_in_slide_out(t, 
+                                                    1, 
+                                                    -1,
+                                                    outro_audio_duration_total - comment_audio_start, 
+                                                    settings['comment_text_position'][0], 
+                                                    settings['comment_anim_overshoot'], 
+                                                    settings['comment_anim_right_move']),
+                                                    settings['comment_text_position'][1]) ) 
+                        )
+        
+        
+        saved_parts['Comment'][0][0] = comment_text_border
+        saved_parts['Comment'][0][1] = comment_text
         saved_parts['Comment'][1] = False
                                                 
         comment_end_time = time.time()
@@ -1377,12 +2056,20 @@ def make_outro(settings, saved_parts):
         
     
     # this will overlay the text on the background
+    '''
+    outro_video_combined = CompositeVideoClip([saved_parts['Thanks'][0][1]],
+                                              size=settings['screen_size'])
+    '''
+    
+    
     outro_video_combined = CompositeVideoClip([saved_parts['Background'][0], 
-                                            saved_parts['Thanks'][0], 
-                                            saved_parts['Topic'][0], 
-                                            saved_parts['Comment'][0],
+                                            saved_parts['Thanks'][0][0], saved_parts['Thanks'][0][1],
+                                            saved_parts['Topic'][0][0], saved_parts['Topic'][0][1],
+                                            saved_parts['Comment'][0][0], saved_parts['Comment'][0][1],
                                             saved_parts['Subscribe Box'][0],
-                                            saved_parts['Subscribe'][0],], size=settings['screen_size'])
+                                            saved_parts['Subscribe'][0][0], saved_parts['Subscribe'][0][1]], 
+                                              size=settings['screen_size'])
+                                              
     outro_video_audio_combined = outro_video_combined.set_audio(outro_audio)
     
     
@@ -1392,8 +2079,8 @@ def make_outro(settings, saved_parts):
     
     
     # short video for testing
-    if settings['render_ou']:
-        #outro_video_audio_combined = outro_video_audio_combined.subclip(0, audio_thanks.duration)
+    if render_outro:
+        #outro_video_audio_combined = outro_video_audio_combined.subclip(0, audio_thanks.duration + 1)
         
         print(f"Outro Starting Render, Edit Took: ", round(outro_end_time - outro_start_time, 2), " seconds")
         
@@ -1401,13 +2088,13 @@ def make_outro(settings, saved_parts):
         outro_video_audio_combined.write_videofile(
                                 filename=f"{quiz_path}Finished/outro.mp4", 
                                 fps=settings['fps'],  # Frame rate
-                                codec="libx264",  # Video codec (h264) or 'mpeg4' could also work
+                                codec=video_codec,  # Video codec (h264) or 'mpeg4' could also work
                                 audio=True, # Do not include audio
                                 audio_codec="aac",  # Audio codec
                                 audio_bitrate="192k",  # Audio bitrate
-                                preset="medium",  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
+                                preset=video_preset,  # Compression (ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow, placebo)
                                 threads=8,  # Number of threads for processing (None for auto)
-                                ffmpeg_params=[],  # Additional FFmpeg parameters: CRF for quality
+                                ffmpeg_params=["-q:v", "75"],  # Additional FFmpeg parameters: CRF for quality
                                 logger="bar"
                             )
         end_time = time.time()

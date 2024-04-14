@@ -185,16 +185,16 @@ def run_pygame_editor(settings, section):
         
         # this will store the text with a dirty bool so i can know if i need to recalculate it
         saved_parts = {
-            'Quick': [None, True],
-            'How Well': [None, True],
-            'Topic': [None, True],
-            '3 Questions': [None, True],
-            'Seconds': [None, True],
+            'Quick': [[None, None], True],
+            'How Well': [[None, None], True],
+            'Topic': [[None, None], True],
+            '3 Questions': [[None, None], True],
+            'Seconds': [[None, None], True],
             'Background': [None, True]
         }
         
         
-        all_slider_controls.append(Slider_Control(0, "Quick Size", "Quick", "quick_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
+        all_slider_controls.append(Slider_Control(0, "Quick Size", "Quick", "quick_font_size", settings, (0, 350), 5, -1, scaled_screen_size))
         all_slider_controls.append(Slider_Control(50, "Quick Position Y", "Quick", "quick_position", settings, (-1000, 1000), 25, 1, scaled_screen_size))
         
         all_slider_controls.append(Slider_Control(150, "How Well Size", "How Well", "how_well_font_size", settings, (0, 300), 5, -1, scaled_screen_size))
@@ -215,10 +215,10 @@ def run_pygame_editor(settings, section):
         
         # this will store the text with a dirty bool so i can know if i need to recalculate it
         saved_parts = {
-            'Title': [None, True],
-            'Question': [None, True],
+            'Title': [[None, None], True],
+            'Question': [[None, None], True],
             'Answer Image': [None, True],
-            'Answer': [None, True],
+            'Answer': [[None, None], True],
             'Background': [None, True],
             'Timer': [None, True]
         }
@@ -249,10 +249,10 @@ def run_pygame_editor(settings, section):
         
         # this will store the text with a dirty bool so i can know if i need to recalculate it
         saved_parts = {
-            'Title': [None, True],
-            'Question': [None, True],
+            'Title': [[None, None], True],
+            'Question': [[None, None], True],
             'Answer Image': [None, True],
-            'Answer': [None, True],
+            'Answer': [[None, None], True],
             'Background': [None, True],
             'Timer': [None, True]
         }
@@ -283,10 +283,10 @@ def run_pygame_editor(settings, section):
         
         # this will store the text with a dirty bool so i can know if i need to recalculate it
         saved_parts = {
-            'Title': [None, True],
-            'Question': [None, True],
+            'Title': [[None, None], True],
+            'Question': [[None, None], True],
             'Answer Image': [None, True],
-            'Answer': [None, True],
+            'Answer': [[None, None], True],
             'Background': [None, True],
             'Timer': [None, True]
         }
@@ -316,11 +316,11 @@ def run_pygame_editor(settings, section):
         
         # this will store the text with a dirty bool so i can know if i need to recalculate it
         saved_parts = {
-            'Thanks': [None, True],
-            'Topic': [None, True],
-            'Subscribe': [None, True],
+            'Thanks': [[None, None], True],
+            'Topic': [[None, None], True],
+            'Subscribe': [[None, None], True],
             'Subscribe Box': [None, True],
-            'Comment': [None, True],
+            'Comment': [[None, None], True],
             'Background': [None, True]
         }
         
@@ -413,7 +413,7 @@ def run_pygame_editor(settings, section):
                 
                 start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_intro(settings, saved_parts)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_intro(settings, saved_parts, False)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
                 
@@ -424,7 +424,7 @@ def run_pygame_editor(settings, section):
                 
                 start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 1)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 1, False)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
                 
@@ -435,7 +435,7 @@ def run_pygame_editor(settings, section):
                 
                 start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 2)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 2, False)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
                 
@@ -446,7 +446,7 @@ def run_pygame_editor(settings, section):
                 
                 start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 3)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_questions(settings, saved_parts, 3, False)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
                 
@@ -457,7 +457,7 @@ def run_pygame_editor(settings, section):
                 
                 start_editing_time = time.time()
                 # settings will already be kept up to date so just make the new image
-                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_outro(settings, saved_parts)
+                (edited_clip, screenshot_time, saved_parts) = Make_Video_Sections.make_outro(settings, saved_parts, False)
                 editing_image = get_moviepy_frame_to_pygame(edited_clip, screenshot_time, screen_size, scale)
                 image_dirty = False
                 

@@ -98,10 +98,11 @@ def pop_in_pop_out_size(t, in_time, out_time, clip_duration, max_width, max_heig
         new_width = max(new_width, 1)
         new_height = max(new_height, 1)
         
-        
+        #print(f"t({round(t, 2)}): ({round(new_width, 2)}, {round(new_height, 2)})")
         return (new_width, new_height)
         
     else: # its not sliding in or out
+        #print(f"t({round(t, 2)}): ({round(max_width, 2)}, {round(max_height, 2)})")
         return (max_width, max_height)
     
     

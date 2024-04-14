@@ -11,21 +11,8 @@
     "testing": 0,
     "use_timer_frame": false,
 
-    "edit_in": 0,
-    "edit_q1": 0,
-    "edit_q2": 0,
-    "edit_q3": 0,
-    "edit_ou": 0,
-
-    "render_video": 0,
-    "render_in": 0,
-    "render_q1": 0,
-    "render_q2": 0,
-    "render_q3": 0,
-    "render_ou": 0,
 
 
-        
     "font_topic": "DEFAULT_FONT_TOPIC",
     "font_title": "DEFAULT_FONT_TITLE",
     "font_general_text": "DEFAULT_FONT_GENERAL",
@@ -34,6 +21,7 @@
     "text_border_colour": "black",
 
     "timer_path": "Generic Assets/Loading Circle.mov",
+    "timer_size": 400,
 
     "background_image_path": "Topics/BACKGROUND_PATH",
     "background_position": [0, 0],

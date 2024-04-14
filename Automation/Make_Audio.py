@@ -13,10 +13,10 @@ quiz_path = f"{main_path}{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}
 
 
 do_in = 1
-do_q1 = 1
-do_q2 = 1
-do_q3 = 1
-do_ou = 1
+do_q1 = 0
+do_q2 = 0
+do_q3 = 0
+do_ou = 0
 
 sections_durations = [0, 0, 0, 0, 0]
 total_duration = 0

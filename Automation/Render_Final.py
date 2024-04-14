@@ -1,12 +1,14 @@
-#from pygame import image, display, event, quit
-import sys
-import subprocess
-import os
 
+
+# runs my ffmpeg command to render the final video from all of its sections
+#from pygame import image, display, event, quit
+
+import subprocess
 from Make_Video_Globals import Globals
+
 if __name__ == "__main__":
     filenames = ['intro.mp4', 'q1.mp4', 'q2.mp4', 'q3.mp4', 'outro.mp4']
-    output_filename = f'{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}.mp4'
+    output_filename = f'{Globals.topic} Quiz {Globals.quiz_num}.mp4'
     
     # add the correct path to the front
     full_path = f"Topics/{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}/Finished/"
@@ -24,8 +26,8 @@ if __name__ == "__main__":
     # rencode with libx264 so it will compress way more
     command = f"ffmpeg -f concat -safe 0 -i video_file_list.txt -c:v libx264 -c:a copy '{full_path + output_filename}' -y"
     
-
-
+    # rencode with toolbox so it will compress (does compress but not as much as libx264)
+    #command = f"ffmpeg -f concat -safe 0 -i video_file_list.txt -c:v h264_videotoolbox -c:a copy '{full_path + output_filename}' -y"
 
     # Execute the command
     subprocess.run(command, shell=True)

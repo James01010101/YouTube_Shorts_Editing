@@ -9,6 +9,7 @@ from moviepy.audio.AudioClip import AudioClip
 import Make_Video_Sections as Make_Video_Sections
 import Make_Video_Animations
 from Make_Video_Globals import Globals
+from Make_Video_Helpers import *
 import Interactive_Editor
 
     
@@ -18,22 +19,29 @@ import Interactive_Editor
 if __name__ == '__main__':
     
     # print info about available (color, font)
-    #print(TextClip.list('font'))
+    print(TextClip.list('font'))
+    
+    # this file isnt used anymore
+    sys.exit(0)
     
     # load in the correct globals file
     settings = Globals.read_settings_file(Globals.topic, Globals.quiz_num)
     
     
-    use_pygame_editor = False
+    use_pygame_editor = True
         
         
     
     
     full_edit_start_time = time.time()
     
-    if settings['render_video'] and settings['testing']:
-        print("Your trying to render the video with testing on so im stopping..")
+    if settings['render_video']:
+        # render the video from its parts
+        render_video()
+        print("Finished Rendering Video Exiting")
         sys.exit(0)
+        
+        
     
     
     total_editing_time = 0
@@ -50,11 +58,11 @@ if __name__ == '__main__':
             start_time = time.time()
             
             saved_parts = {
-                'Quick': [None, True],
-                'How Well': [None, True],
-                'Topic': [None, True],
-                '3 Questions': [None, True],
-                'Seconds': [None, True],
+                'Quick': [[None, None], True],
+                'How Well': [[None, None], True],
+                'Topic': [[None, None], True],
+                '3 Questions': [[None, None], True],
+                'Seconds': [[None, None], True],
                 'Background': [None, True]
             }
             (intro_final_video, screenshot_time, saved_parts) = Make_Video_Sections.make_intro(settings, saved_parts)
@@ -70,10 +78,10 @@ if __name__ == '__main__':
             start_time = time.time()
             
             saved_parts = {
-                'Title': [None, True],
-                'Question': [None, True],
+                'Title': [[None, None], True],
+                'Question': [[None, None], True],
                 'Answer Image': [None, True],
-                'Answer': [None, True],
+                'Answer': [[None, None], True],
                 'Background': [None, True],
                 'Timer': [None, True]
             }
@@ -91,10 +99,10 @@ if __name__ == '__main__':
             start_time = time.time()
             
             saved_parts = {
-                'Title': [None, True],
-                'Question': [None, True],
+                'Title': [[None, None], True],
+                'Question': [[None, None], True],
                 'Answer Image': [None, True],
-                'Answer': [None, True],
+                'Answer': [[None, None], True],
                 'Background': [None, True],
                 'Timer': [None, True]
             }
@@ -111,10 +119,10 @@ if __name__ == '__main__':
             start_time = time.time()
             
             saved_parts = {
-                'Title': [None, True],
-                'Question': [None, True],
+                'Title': [[None, None], True],
+                'Question': [[None, None], True],
                 'Answer Image': [None, True],
-                'Answer': [None, True],
+                'Answer': [[None, None], True],
                 'Background': [None, True],
                 'Timer': [None, True]
             }
@@ -132,11 +140,11 @@ if __name__ == '__main__':
             start_time = time.time()
             
             saved_parts = {
-                'Thanks': [None, True],
-                'Topic': [None, True],
-                'Subscribe': [None, True],
+                'Thanks': [[None, None], True],
+                'Topic': [[None, None], True],
+                'Subscribe': [[None, None], True],
                 'Subscribe Box': [None, True],
-                'Comment': [None, True],
+                'Comment': [[None, None], True],
                 'Background': [None, True]
             }
             

@@ -19,6 +19,8 @@
 Music/*
 Generic\ Assets/*
 
+# dont need the actual topics, just the code really
+Topics/*
 
 # random stuff
 */__pycache__/*
