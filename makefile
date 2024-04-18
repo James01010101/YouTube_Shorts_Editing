@@ -6,6 +6,12 @@
 
 # '#' are now comments out lines so they won't be read, this is using grep to remove lines starting with #
 
+# globals mainly for the audio files
+topic := JJK
+quiz_num := 1
+
+
+
 newfolder:
 	clear
 	python "Automation/New_Folder.py"
@@ -82,6 +88,25 @@ render_final:
 # render out all individual parts and the final full video
 render_all: render_intro render_q1 render_q2 render_q3 render_outro
 	python "Automation/Render_Final.py"
+
+
+
+# audios
+audio_intro_quick: $(quiz_path)/Intro/Script/Quick.txt
+	grep -v '^#' '$(quiz_path)/Intro/Script/Quick.txt' | say -o '$(quiz_path)/Intro/Wav/Quick.aiff'
+	ffmpeg -i '$(quiz_path)/Intro/Wav/Quick.aiff' '$(quiz_path)/Intro/Wav/Quick.wav' -loglevel error -y
+	rm '$(quiz_path)/Intro/Wav/Quick.aiff'
+
+audio_intro: audio_intro_quick audio_intro_how audio_intro_topic audio_intro_prove audio_intro_questions audio_intro_seconds
+
+
+
+
+
+
+
+
+
 
 # run my test file to test some random code
 test:

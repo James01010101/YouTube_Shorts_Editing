@@ -2,8 +2,9 @@
 import json
 
 class Globals:
-    topic = "JJK"
-    quiz_num = "1"
+    topic = "Fortnite"
+    full_topic = "Fortnite"
+    quiz_num = "4"
     
 
     def read_settings_file(topic, quiz_num):

@@ -129,6 +129,9 @@ def run_pygame_editor(settings, section):
     pygame.font.init()  # Initialize the font module
     pygame.init()
     
+    if settings["testing"] == 1:
+        print("### Testing On ###")
+    
     screen_size = (1080, 1920)
     scale = 0.6
     scaled_screen_size = (int(screen_size[0]*scale), int(screen_size[1]*scale))

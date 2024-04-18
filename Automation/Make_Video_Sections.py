@@ -497,12 +497,12 @@ def make_intro(settings, saved_parts, render_intro):
     quiz_path = f"Topics/{settings['topic']}/{settings['topic']} Quiz {settings['quiz_num']}/"
     
     # load in all audio
-    audio_quick = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Quick.wav")
-    audio_how_well = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/How_Well.wav")
-    audio_topic = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Topic.wav")
-    audio_prove = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/Prove.wav")
-    audio_3_questions = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/3_Questions.wav")
-    audio_x_seconds = AudioFileClip(f"{quiz_path}Audio/Intro/Wav/X_Seconds.wav")
+    audio_quick = AudioFileClip(f"{quiz_path}Audio/Intro/Quick.wav")
+    audio_how_well = AudioFileClip(f"{quiz_path}Audio/Intro/How_Well.wav")
+    audio_topic = AudioFileClip(f"{quiz_path}Audio/Intro/Topic.wav")
+    audio_prove = AudioFileClip(f"{quiz_path}Audio/Intro/Prove.wav")
+    audio_3_questions = AudioFileClip(f"{quiz_path}Audio/Intro/3_Questions.wav")
+    audio_x_seconds = AudioFileClip(f"{quiz_path}Audio/Intro/X_Seconds.wav")
     
     # put together the audio
     intro_audio = concatenate_audioclips(
@@ -820,23 +820,7 @@ def make_intro(settings, saved_parts, render_intro):
                                                         stroke_color=settings['text_border_colour']) )
         
         three_questions_duration = intro_audio_duration_total - three_questions_audio_start
-        #intro_three_questions_text_combined = ( CompositeVideoClip([intro_three_questions_text_border, intro_three_questions_text], size=settings['screen_size'])
-                                            #.set_duration(three_questions_duration)
-                                            #.set_start(three_questions_audio_start)
-                                            #.crossfadein(settings['three_questions_anim_in_time'])
-                                            #.crossfadeout(settings['three_questions_anim_out_time'])
-                                            #)
-            
-        # returns the new x position of the text and keeps the y the same
-       #intro_three_questions_text_combined = intro_three_questions_text_combined.set_position(lambda t: (
-                                                #Animations.slide_in_slide_out(t, 
-                                                                            #audio_3_questions.duration, 
-                                                                            #settings['three_questions_anim_out_time'],
-                                                                            #three_questions_duration, 
-                                                                            #settings['three_questions_position'][0], 
-                                                                            #settings['three_questions_anim_overshoot'], 
-                                                                            #settings['three_questions_anim_right_move']),
-                                                                            #settings['three_questions_position'][1])) 
+
         
         intro_three_questions_text_border = (intro_three_questions_text_border
                                                 .set_duration(three_questions_duration)
@@ -898,26 +882,6 @@ def make_intro(settings, saved_parts, render_intro):
                                                         stroke_color=settings['text_border_colour']) )
                         
         intro_seconds_duration = intro_audio_duration_total - seconds_audio_start
-        '''
-        intro_seconds_text_combined = ( CompositeVideoClip([intro_seconds_text_border, intro_seconds_text], size=settings['screen_size'])
-                                        .set_start(seconds_audio_start)
-                                        .set_duration(intro_seconds_duration)
-                                        .crossfadein(settings['seconds_anim_in_time'])
-                                        .crossfadeout(settings['seconds_anim_out_time'])
-                                        )
-        
-        
-        # returns the new x position of the text and keeps the y the same
-        intro_seconds_text_combined = intro_seconds_text_combined.set_position(lambda t: (
-                                                Animations.slide_in_slide_out(t, 
-                                                                            audio_x_seconds.duration, 
-                                                                            settings['seconds_anim_out_time'],
-                                                                            intro_seconds_duration, 
-                                                                            settings['seconds_position'][0], 
-                                                                            settings['seconds_anim_overshoot'], 
-                                                                            settings['seconds_anim_right_move']),
-                                                settings['seconds_position'][1])) 
-        '''
         
         intro_seconds_text_border = (intro_seconds_text_border
                                         .set_start(seconds_audio_start)
@@ -1036,9 +1000,9 @@ def make_questions(settings, saved_parts, question_num, render_question):
     quiz_path = f"Topics/{settings['topic']}/{settings['topic']} Quiz {settings['quiz_num']}/"
     
     # load in all audio
-    audio_title = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Wav/Title.wav")
-    audio_question = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Wav/Question.wav")
-    audio_answer = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Wav/Answer.wav")
+    audio_title = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Title.wav")
+    audio_question = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Question.wav")
+    audio_answer = AudioFileClip(f"{quiz_path}Audio/Q{question_num}/Answer.wav")
     
     # put together the audio
     audio_combined = concatenate_audioclips(
@@ -1108,12 +1072,7 @@ def make_questions(settings, saved_parts, question_num, render_question):
             lambda t: Animations.pop_in_pop_out_size(t, audio_title.duration, 1, audio_duration_total, width, height, settings['question_title_pop_in_overshoot']))
         title_text_border = title_text_border.set_position(
             lambda t: Animations.pop_in_pop_out_position(t, audio_title.duration, 1, audio_duration_total, width, height, settings['screen_size'], settings['question_title_position'][0], settings['question_title_position'][1], settings['question_title_pop_in_overshoot']))
-        '''    
-        title_text_combined = ( CompositeVideoClip([title_text_border, title_text], size=settings['screen_size'])
-                                .set_start(0)
-                                .set_duration(audio_duration_total)
-                                .crossfadeout(1) )
-        '''
+
         
         title_text_border = (title_text_border
                                 .set_start(0)
@@ -1233,21 +1192,16 @@ def make_questions(settings, saved_parts, question_num, render_question):
             
         # set the duration of the last clips to last (and one clip length)
         question_text = concatenate_videoclips(clips, method="chain")
+        question_text = (question_text
+                                .set_position(question_position)
+                                .crossfadeout(1) )
         
         question_text_border = concatenate_videoclips(border_clips, method="chain")
-                                
-        '''
-        question_text_combined = ( CompositeVideoClip([question_text_border, question_text], size=settings['screen_size'])
-                                    .set_position(question_position)
-                                    .crossfadeout(1) )
-        '''
         question_text_border = (question_text_border
                                 .set_position(question_position)
                                 .crossfadeout(1) )
         
-        question_text = (question_text
-                                .set_position(question_position)
-                                .crossfadeout(1) )
+        
         
         # so if im testing everything still lines up (otherwise question comes in right, but goes out too early)
         if settings['testing']:
@@ -1330,24 +1284,6 @@ def make_questions(settings, saved_parts, question_num, render_question):
                                         interline=settings['answer_interline'],
                                         stroke_width=settings['text_border_width'], 
                                         stroke_color=settings['text_border_colour']) )
-                        
-        '''
-        answer_text_combined = ( CompositeVideoClip([answer_text_border, answer_text], size=settings['screen_size'])
-                                .set_start(answer_audio_start) 
-                                .set_duration(audio_duration_total - answer_audio_start)
-                                .crossfadein(0.5)
-                                .crossfadeout(settings['answer_anim_out_time']) )
-        
-        answer_text_combined = answer_text_combined.set_position(lambda t: (
-                                Animations.slide_in_slide_out(  t, 
-                                                                -1, 
-                                                                settings['answer_anim_out_time'],
-                                                                audio_duration_total - answer_audio_start, 
-                                                                answer_position[0], 
-                                                                settings['answer_anim_overshoot'], 
-                                                                settings['answer_anim_right_move']),
-                                                                answer_position[1]) )
-        '''
         
         answer_text_border = (answer_text_border
                                 .set_start(answer_audio_start) 
@@ -1623,10 +1559,7 @@ def make_questions(settings, saved_parts, question_num, render_question):
     
     
     # if my answer image is joined with the helper
-    print(type(saved_parts['Answer Image'][0]))
     if type(saved_parts['Answer Image'][0]) == list:
-        print("Using list path")
-        
         video_combined = CompositeVideoClip([saved_parts['Background'][0], 
                                             saved_parts['Answer Image'][0][0], saved_parts['Answer Image'][0][1],
                                             saved_parts['Title'][0][0], saved_parts['Title'][0][1],
@@ -1635,7 +1568,6 @@ def make_questions(settings, saved_parts, question_num, render_question):
                                             saved_parts['Answer'][0][0], saved_parts['Answer'][0][1]], 
                                                 size=settings['screen_size'])
     else: # just a single answer image
-        print("Using other path")
         video_combined = CompositeVideoClip([saved_parts['Background'][0], 
                                             saved_parts['Answer Image'][0],
                                             saved_parts['Title'][0][0], saved_parts['Title'][0][1],
@@ -1701,11 +1633,11 @@ def make_outro(settings, saved_parts, render_outro):
     quiz_path = f"Topics/{settings['topic']}/{settings['topic']} Quiz {settings['quiz_num']}/"
     
     # load in all audio
-    audio_thanks = AudioFileClip(f"{quiz_path}Audio/Outro/Wav/Thanks.wav")
-    audio_topic = AudioFileClip(f"{quiz_path}Audio/Outro/Wav/Topic.wav")
-    audio_enjoy = AudioFileClip(f"{quiz_path}Audio/Outro/Wav/Enjoy.wav")
-    audio_comment = AudioFileClip(f"{quiz_path}Audio/Outro/Wav/Comments.wav")
-    audio_subscribe = AudioFileClip(f"{quiz_path}Audio/Outro/Wav/Subscribe.wav")
+    audio_thanks = AudioFileClip(f"{quiz_path}Audio/Outro/Thanks.wav")
+    audio_topic = AudioFileClip(f"{quiz_path}Audio/Outro/Topic.wav")
+    audio_enjoy = AudioFileClip(f"{quiz_path}Audio/Outro/Enjoy.wav")
+    audio_comment = AudioFileClip(f"{quiz_path}Audio/Outro/Comments.wav")
+    audio_subscribe = AudioFileClip(f"{quiz_path}Audio/Outro/Subscribe.wav")
     
     # put together the audio
     outro_audio = concatenate_audioclips(
@@ -1774,10 +1706,6 @@ def make_outro(settings, saved_parts, render_outro):
             lambda t: Animations.pop_in_pop_out_size(t, audio_thanks.duration, -1, outro_audio_duration_total, width, height, settings['thanks_pop_in_overshoot']))
         
         
-        '''
-        thanks_text_combined = ( CompositeVideoClip([thanks_text_border, thanks_text], size=settings['screen_size'])
-                                    .set_duration(outro_audio_duration_total) )
-        '''
         
         thanks_text_border = thanks_text_border.set_duration(outro_audio_duration_total)
         thanks_text = thanks_text.set_duration(outro_audio_duration_total)
@@ -1871,20 +1799,16 @@ def make_outro(settings, saved_parts, render_outro):
         
         # join then all
         outro_topic_text = concatenate_videoclips(normal_clips, method="chain")
-        outro_topic_text_border = concatenate_videoclips(border_clips, method="chain")
-        '''
-        outro_topic_text_combined = ( CompositeVideoClip([outro_topic_text_border, outro_topic_text], size=settings['screen_size'])
+        outro_topic_text = (outro_topic_text
                                         .set_start(audio_thanks.duration)
                                         .set_position(settings['topic_outro_position']))
-        '''
         
+        outro_topic_text_border = concatenate_videoclips(border_clips, method="chain")        
         outro_topic_text_border = (outro_topic_text_border
                                         .set_start(audio_thanks.duration)
                                         .set_position(settings['topic_outro_position']))
         
-        outro_topic_text = (outro_topic_text
-                                        .set_start(audio_thanks.duration)
-                                        .set_position(settings['topic_outro_position']))
+        
         
         saved_parts['Topic'][0][0] = outro_topic_text_border
         saved_parts['Topic'][0][1] = outro_topic_text
@@ -1915,13 +1839,7 @@ def make_outro(settings, saved_parts, render_outro):
                                             kerning=settings['subscribe_kerning'], 
                                             stroke_width=settings['text_border_width'], 
                                             stroke_color=settings['text_border_colour']) )
-        '''
-        subscribe_text_combined = ( CompositeVideoClip([subscribe_text_border, subscribe_text], size=settings['screen_size'])
-                                    .set_start(subscribe_audio_start)
-                                    .set_duration(outro_audio_duration_total - subscribe_audio_start)
-                                    .crossfadein(1)
-                                    .set_position(settings['subscribe_text_position']) )
-        '''
+
         
         subscribe_text_border = (subscribe_text_border
                                     .set_start(subscribe_audio_start)
@@ -2054,13 +1972,6 @@ def make_outro(settings, saved_parts, render_outro):
         background_end_time = time.time()
         print(f"Background Time: {round(background_end_time - background_start_time, 2)}")
         
-    
-    # this will overlay the text on the background
-    '''
-    outro_video_combined = CompositeVideoClip([saved_parts['Thanks'][0][1]],
-                                              size=settings['screen_size'])
-    '''
-    
     
     outro_video_combined = CompositeVideoClip([saved_parts['Background'][0], 
                                             saved_parts['Thanks'][0][0], saved_parts['Thanks'][0][1],

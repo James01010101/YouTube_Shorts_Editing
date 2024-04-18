@@ -1,200 +1,220 @@
 import os
-from moviepy.editor import AudioFileClip, CompositeAudioClip, concatenate_audioclips
+import time
+import multiprocessing as mp
 
-# this will go through all folders and make and play the audio files
+from moviepy.editor import AudioFileClip, CompositeAudioClip, concatenate_audioclips
 
 from Make_Video_Globals import Globals
 
-settings = Globals.read_settings_file(Globals.topic, Globals.quiz_num)
 
+
+settings = Globals.read_settings_file(Globals.topic, Globals.quiz_num)
 
 main_path = "/Users/jamescoldwell/Desktop/YouTube Shorts/Topics/"
 quiz_path = f"{main_path}{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}/"
+audio_path = f"{quiz_path}Audio"
 
 
-do_in = 1
+do_in = 0
 do_q1 = 0
 do_q2 = 0
 do_q3 = 0
-do_ou = 0
+do_ou = 1
+
 
 sections_durations = [0, 0, 0, 0, 0]
 total_duration = 0
 
+audio_speed = 200
 
 
-if do_in:
-    print("Making Intro Audio")
-    # go through all files in the script folder and for each do something
-    intro_audio_files = ["Quick" ,"How_Well", "Topic", "Prove", "3_Questions", "X_Seconds"]
-    section = "Intro"
-    for file in intro_audio_files:
-        print(file)
-        file = file.split('.')[0]
-        
-        os.system(f"grep -v '^#' '{quiz_path}Audio/{section}/Script/{file}.txt' | say -o '{quiz_path}Audio/temp.aiff'")
-        os.system(f"ffmpeg -i '{quiz_path}/Audio/temp.aiff' '{quiz_path}/Audio/{section}/Wav/{file}.wav' -loglevel error -y")
-        
-    # join all audios together 
-    clips = []
-    for i in range(len(intro_audio_files)):
-        clips.append(AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{intro_audio_files[i]}.wav"))
+def Create_Audio_File(section, audio_file, text):
     
+    # add the speed to the text
+    text = f"[[rate {audio_speed}]] {text} [[rate 0]]"
+        
+    os.system(f"say '{text}' -o '{audio_path}/{section}/{audio_file}.aiff'")
+    os.system(f"ffmpeg -i '{audio_path}/{section}/{audio_file}.aiff' '{audio_path}/{section}/{audio_file}.wav' -loglevel error -y")
+    
+    # delete the aiff file
+    os.system(f"rm '{audio_path}/{section}/{audio_file}.aiff'")
+
+
+# create the joined audio file with all of the parts for this section
+def Create_Full_Audio_File(section, clips):
+    
+    # join all audios together 
     combined_audio = concatenate_audioclips(clips)
+    combined_audio.write_audiofile(f"{audio_path}/{section}/{section}_Combined.mp3")
+    
+
+
+def Play_Full_Audio(section):
+    #print(f"Playing {section} Audio")
+    os.system(f"afplay '{audio_path}/{section}/{section}_Combined.mp3'")
     
     
-    combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
+def Create_Full_Section(section, settings, audio_txt_files):
+    print(f"\nMaking {section} Audio")
+    
+    clips = []
+    # create all audios
+    for (audio_file, text) in audio_txt_files:
+        print(audio_file)
         
-    print("Playing Intro Audio")
-    os.system(f"afplay '{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3'")
+        if audio_file == "Answer":
+            # then i need to add some stuff to the text first
+            text = f"The correct answer, is {settings[text]}"
+        else:
+            text = settings[text]
+            
+        Create_Audio_File(section, audio_file, text)
+        clips.append(AudioFileClip(f"{audio_path}/{section}/{audio_file}.wav"))
+        
+    # join all audios together into the full mp3
+    Create_Full_Audio_File(section, clips)
     
-    # get the duration of the mp3 audio clip
-    for i in range(len(intro_audio_files)):
-        sections_durations[0] += clips[i].duration
-    sections_durations[0] = round(sections_durations[0], 2)
+    
+def Do_Question(q):
+    section = f"Q{q}"
+    q_audio_txt_files = [("Title", f"question_{q}_audio_title_text"),
+                            ("Question", f"question_{q}_audio_text"),
+                            ("Answer", f"answer_{q}_audio_text")]
+    
+    Create_Full_Section(section, settings, q_audio_txt_files)
+        
+    
+# this will go through each section and make the audio files if they re true
+def Run_Create_Audio_Files():
+    started_playing_audio = False
+    
+    if do_in:
+        section = "Intro"
+        intro_audio_txt_files = [
+            ("Quick", "quick_audio_text"),
+            ("How_Well", "how_well_audio_text"),
+            ("Topic", "topic_intro_audio_text"),
+            ("Prove", "prove_audio_text"),
+            ("3_Questions", "three_questions_audio_text"),
+            ("X_Seconds", "seconds_audio_text"),
+        ]
+        
+        Create_Full_Section(section, settings, intro_audio_txt_files)
+        if not started_playing_audio: # so that only the first section to finish will start playing the audio
+            mp.Process(target=Play_All_Audio_Files).start()
+            started_playing_audio = True
+             
+
+    if do_q1:
+        q = 1
+        section = f"Q{q}"
+        Do_Question(q)
+        if not started_playing_audio:
+            mp.Process(target=Play_All_Audio_Files).start()
+            started_playing_audio = True
+        
+    if do_q2:
+        q = 2
+        section = f"Q{q}"
+        Do_Question(q)
+        if not started_playing_audio:
+            mp.Process(target=Play_All_Audio_Files).start()
+            started_playing_audio = True
+        
+    if do_q3:
+        q = 3
+        section = f"Q{q}"
+        Do_Question(q)
+        if not started_playing_audio:
+            mp.Process(target=Play_All_Audio_Files).start()
+            started_playing_audio = True
+        
+
+    if do_ou:
+        section = "Outro"
+        outro_audio_txt_files = [
+            ("Thanks", "thanks_audio_text"),
+            ("Topic", "topic_outro_audio_text"),
+            ("Enjoy", "enjoy_audio_text"),
+            ("Comments", "comment_audio_text"),
+            ("Subscribe", "subscribe_audio_text"),
+        ]
+        
+        Create_Full_Section(section, settings, outro_audio_txt_files)
+        if not started_playing_audio:
+            mp.Process(target=Play_All_Audio_Files).start()
+            started_playing_audio = True
         
         
-    print("Intro Duration: ", sections_durations[0])
-    
+    # load in all the full mp3 files for duration
+    # this way i always get the total duration of audio even if i dont run all
     print() # for spacing
+    all_sections = ["Intro", "Q1", "Q2", "Q3", "Outro"]
+    for i in range(len(all_sections)):
+        if os.path.exists(f"{audio_path}/{all_sections[i]}/{all_sections[i]}_Combined.mp3"):
+            audio = AudioFileClip(f"{audio_path}/{all_sections[i]}/{all_sections[i]}_Combined.mp3")
+            sections_durations[i] = round(audio.duration, 2)
+            
+        else: # if that audio file doesnt exist then 0
+            sections_durations[i] = 0
+            
+        print(f"{all_sections[i]} duration: {sections_durations[i]}")
+        
+            
+        
+    total_duration = sum(sections_durations)
+    print("\nTotal duration of spoken audio: ", round(total_duration, 2))
+
+    total_duration += (3 * settings['question_silence_duration'])
+    print(f"With {settings['question_silence_duration']} second delay for answering questions: ", (3 * settings['question_silence_duration']))
+
+    total_duration += settings['question_end_silence_duration'] * 3 + 1 # +1 for the intro to q1
+    print(f"With fade out period of {settings['question_end_silence_duration']} second: ", settings['question_end_silence_duration'] * 3 + 1)
+
+    total_duration += settings['title_to_question_silence'] * 3
+    print(f"With all other spaces throughout: ", settings['title_to_question_silence'] * 3)
+    
+    print("\nTotal duration of video: ", round(total_duration, 2))
+        
         
 
-if do_q1:
-    print("Making Q1 Audio")
-    # go through all files in the script folder and for each do something
-    q1_audio_files = ["Title" ,"Question", "Answer"]
-    section = "Q1"
-    for file in q1_audio_files:
-        print(file)
-        file = file.split('.')[0]
+# this will go through and play all audio files 
+def Play_All_Audio_Files():
+    
+    if do_in:
+        section = "Intro"
+        Play_Full_Audio(section)
         
-        os.system(f"grep -v '^#' '{quiz_path}Audio/{section}/Script/{file}.txt' | say -o '{quiz_path}Audio/temp.aiff'")
-        os.system(f"ffmpeg -i '{quiz_path}/Audio/temp.aiff' '{quiz_path}/Audio/{section}/Wav/{file}.wav' -loglevel error -y")
+    if do_q1:
+        q = 1
+        section = f"Q{q}"
+        Play_Full_Audio(section)
         
-    # join all audios together 
-    a1 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[0]}.wav")
-    a2 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[1]}.wav")
-    a3 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[2]}.wav")
-    
-    combined_audio = concatenate_audioclips([a1, a2, a3])
-    
-    combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
+    if do_q2:
+        q = 2
+        section = f"Q{q}"
+        Play_Full_Audio(section)
         
-    print("Playing Q1 Audio")
-    os.system(f"afplay '{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3'")
-    
-    sections_durations[1] = round(a1.duration + a2.duration + a3.duration, 2)
-    print("Q1 Duration: ", sections_durations[1])
-    
-    print() # for spacing
-    
-    
-if do_q2:
-    print("Making Q2 Audio")
-    # go through all files in the script folder and for each do something
-    q1_audio_files = ["Title" ,"Question", "Answer"]
-    section = "Q2"
-    for file in q1_audio_files:
-        print(file)
-        file = file.split('.')[0]
+    if do_q3:
+        q = 3
+        section = f"Q{q}"
+        Play_Full_Audio(section)
         
-        os.system(f"grep -v '^#' '{quiz_path}Audio/{section}/Script/{file}.txt' | say -o '{quiz_path}Audio/temp.aiff'")
-        os.system(f"ffmpeg -i '{quiz_path}/Audio/temp.aiff' '{quiz_path}/Audio/{section}/Wav/{file}.wav' -loglevel error -y")
-        
-    # join all audios together 
-    a1 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[0]}.wav")
-    a2 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[1]}.wav")
-    a3 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[2]}.wav")
-    
-    combined_audio = concatenate_audioclips([a1, a2, a3])
-    
-    combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
-        
-    print("Playing Q2 Audio")
-    os.system(f"afplay '{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3'")
-    
-    sections_durations[2] = round(a1.duration + a2.duration + a3.duration, 2)
-    print("Q2 Duration: ", sections_durations[2])
-    
-    print() # for spacing
+    if do_ou:
+        section = "Outro"
+        Play_Full_Audio(section)
     
 
-if do_q3:
-    print("Making Q3 Audio")
-    # go through all files in the script folder and for each do something
-    q1_audio_files = ["Title" ,"Question", "Answer"]
-    section = "Q3"
-    for file in q1_audio_files:
-        print(file)
-        file = file.split('.')[0]
-        
-        os.system(f"grep -v '^#' '{quiz_path}Audio/{section}/Script/{file}.txt' | say -o '{quiz_path}Audio/temp.aiff'")
-        os.system(f"ffmpeg -i '{quiz_path}/Audio/temp.aiff' '{quiz_path}/Audio/{section}/Wav/{file}.wav' -loglevel error -y")
-        
-    # join all audios together 
-    a1 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[0]}.wav")
-    a2 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[1]}.wav")
-    a3 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{q1_audio_files[2]}.wav")
-    
-    combined_audio = concatenate_audioclips([a1, a2, a3])
-    
-    combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
-        
-    print("Playing Q3 Audio")
-    os.system(f"afplay '{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3'")
-    
-    sections_durations[3] = round(a1.duration + a2.duration + a3.duration, 2)
-    print("Q3 Duration: ", sections_durations[3])
-    
-    print() # for spacing
+if __name__ == '__main__':
+    Run_Create_Audio_Files()
     
     
-if do_ou:
-    print("Making Outro Audio")
-    # go through all files in the script folder and for each do something
-    outro_audio_files = ["Thanks" ,"Topic", "Enjoy", "Comments", "Subscribe"]
-    section = "Outro"
-    for file in outro_audio_files:
-        print(file)
-        file = file.split('.')[0]
-        
-        os.system(f"grep -v '^#' '{quiz_path}Audio/{section}/Script/{file}.txt' | say -o '{quiz_path}Audio/temp.aiff'")
-        os.system(f"ffmpeg -i '{quiz_path}/Audio/temp.aiff' '{quiz_path}/Audio/{section}/Wav/{file}.wav' -loglevel error -y")
-        
-    # join all audios together 
-    a1 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{outro_audio_files[0]}.wav")
-    a2 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{outro_audio_files[1]}.wav")
-    a3 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{outro_audio_files[2]}.wav")
-    a4 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{outro_audio_files[3]}.wav")
-    a5 = AudioFileClip(f"{quiz_path}Audio/{section}/Wav/{outro_audio_files[4]}.wav")
-    
-    combined_audio = concatenate_audioclips([a1, a2, a3, a4, a5])
-    
-    combined_audio.write_audiofile(f"{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3")
-        
-    print("Playing Outro Audio")
-    os.system(f"afplay '{quiz_path}Audio/{section}/Wav/{section}_Combined.mp3'")
-    
-    sections_durations[4] = round(a1.duration + a2.duration + a3.duration + a4.duration + a5.duration, 2)
-    print("Outro Duration: ", sections_durations[4])
-    
-    print() # for spacing
-        
+            
 
-total_duration = sum(sections_durations)
-print("Total duration of audio: ", round(total_duration, 2))
-
-total_duration += (3 * settings['question_silence_duration'])
-print(f"With {settings['question_silence_duration']} second delay for answering questions: ", round(total_duration, 2))
-
-total_duration += settings['question_end_silence_duration'] * 3 + 1 # +1 for the intro to q1
-print(f"With fade out period of {settings['question_end_silence_duration']} second: ", round(total_duration, 2))
-
-total_duration += settings['title_to_question_silence'] * 3
-print(f"With all other spaces throughout: ", round(total_duration, 2))
-        
-        
-        
-        
-        
-        
+    
+            
+            
+            
+            
+            
+            

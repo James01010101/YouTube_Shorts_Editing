@@ -18,7 +18,6 @@ def show_frame(clip, seconds, num):
     # Get a frame at the 10-second mark
     frame = clip.get_frame(seconds)
 
-    print(frame.dtype)
     image = Image.fromarray(frame)
     # Save the image
     image.save(f'Topics/{Globals.topic}/{Globals.topic} Quiz {Globals.quiz_num}/Finished/video_debug_frame_{num}.jpg', quality=50) # very small just for editing
